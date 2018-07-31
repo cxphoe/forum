@@ -1,0 +1,38 @@
+.link, .link:active, .link:focus, .link:hover, .link:link, .link:visited {
+  transition: all .1s ease-in;
+  text-decoration: none;
+}
+
+.link {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.hover-scale:hover {
+  transform: scale(1.1);
+  box-shadow: 0 3px 10px 1px rgba(#000, 0.2);
+}
+
+.hover-bg-white:hover {
+  background-color: #fff;
+}
+
+.hover-white:hover {
+  color: #fff;
+}
+
+.hover-blue:hover {
+  color: #52aac1;
+}
+
+.hover-bg-blue:hover {
+  background-color: #52aac1;
+}
+
+.hover-bg-danger6:hover {
+  background-color: #fa5252;
+}

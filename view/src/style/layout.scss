@@ -1,0 +1,90 @@
+@import "variable";
+
+@media (min-width: $--breakpoint-sm) {
+  .ph-container, .ph-container-wo-xl {
+      max-width: $--breakpoint-sm - 26px;
+  }
+}
+
+@media (min-width: $--breakpoint-md) {
+  .ph-container, .ph-container-wo-xl {
+      max-width: $--breakpoint-md - 48px;
+  }
+}
+
+@media (min-width: $--breakpoint-lg) {
+  .ph-container, .ph-container-wo-xl {
+      max-width: $--breakpoint-lg - 32px;
+  }
+}
+
+@media (min-width: $--breakpoint-xl) {
+  .ph-container {
+    max-width: $--breakpoint-xl - 60px;
+  }
+}
+
+.ph-container, .ph-container-wo-xl {
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.all-inline-box {
+  * {
+    display: block;
+  }
+}
+
+.pull-left {
+  float: left;
+}
+
+.pull-right {
+  float: right;
+}
+
+.h-100 {
+  height: 100%;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.max-h-100 {
+  max-height: 100%;
+}
+
+.max-w-100 {
+  max-width: 100%;
+}
+
+.max-w-100-not {
+  max-width: 100% !important;
+}
+
+.h-auto {
+  height: auto;
+}
+
+.w-auto {
+  width: auto;
+}
+
+.gutter--8px {
+  * + & {
+    padding-left: .5rem;
+    padding-bottom: .5rem;
+  }
+}
+
+.meta {
+  display: flex;
+  box-sizing: border-box;
+  padding: 1pc;
+  height: auto;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}

@@ -1,0 +1,55 @@
+@import "./variable";
+
+$normal-width: .0625rem;
+$bold-width: 0.2625rem;
+
+.btn-depth {
+  transition: color .1s ease-in-out, background-color .1s ease-in-out;
+  box-shadow: inset 0 1px 0 hsla(0,0%,100%,.0125), 0 1px 1px rgba(0,0,0,.05);
+  border-style: solid;
+  border-width: $normal-width;
+  border-bottom-width: $bold-width;
+
+  &:active {
+    border-top-width: $bold-width;
+    border-bottom-width: $normal-width;
+  }
+}
+
+.hover-bd-gray5:hover {
+  border-color: $color-gray5;
+}
+
+$basic-bg-color: #1c7cd6;
+
+.blue-btn-nbw {
+  color: #fff;
+  border-color: #1663ab;
+  background-color: rgba($basic-bg-color, 0.9);
+
+  &:hover {
+    background-color: $basic-bg-color;
+  }
+}
+
+.btn-safe {
+  border: none;
+  color: white;
+  background-color: rgba(#52aac1, 0.8);
+
+  &:hover {
+    color: white;
+    background-color: #52aac1;
+  }
+}
+
+.btn-danger {
+  border: none;
+  color: white;
+  background-color: rgba(#fa5252, 0.8);
+
+  &:hover {
+    color: white;
+    background-color: #fa5252;
+  }
+}

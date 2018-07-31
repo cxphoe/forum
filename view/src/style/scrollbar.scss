@@ -1,0 +1,20 @@
+.slim-scrollbar {
+  &::-webkit-scrollbar {
+    width: .35rem;
+    height: .5rem;
+    background-color: #f7f8f9;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: .5rem;
+    background-color: #ccc;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: .25rem;
+  }
+}
+
+.of-scroll-touch {
+  -webkit-overflow-scrolling: touch;
+}

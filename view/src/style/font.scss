@@ -1,0 +1,59 @@
+@font-face {
+  font-family: ProximaNova;
+  src: url('../assets/ProximaNova-Regular.otf');
+}
+
+@font-face {
+  font-family: Diavlo;
+  src: url('../assets/Diavlo-Regular.otf');
+}
+
+.f1 {
+  font-size: .6rem;
+}
+
+.f2 {
+  font-size: .8rem;
+}
+
+.f3 {
+  font-size: 1rem;
+}
+
+.f4 {
+  font-size: 1.3125rem;
+}
+
+.f5 {
+  font-size: 1.5625rem;
+}
+
+.fw6 {
+  font-weight: 600;
+}
+
+.fw7 {
+  font-weight: 700;
+}
+
+.fw8 {
+  font-weight: 800;
+}
+
+.lh-title {
+  line-height: 1.25 !important;
+}
+
+.lh-solid {
+  line-height: 1;
+}
+
+.text-gray0-shadow-b4 {
+  color: #fafbfc;
+  line-height: 1;
+  text-shadow: 1px 1px 8px #444;
+
+  &:hover {
+    color: #fafbfc;
+  }
+}

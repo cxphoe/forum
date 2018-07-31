@@ -1,0 +1,8 @@
+$avatar-width: 2rem;
+
+.avatar {
+  border-radius: 50%;
+  width: $avatar-width;
+  height: $avatar-width;
+  overflow: hidden;
+}

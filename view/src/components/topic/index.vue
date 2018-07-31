@@ -1,0 +1,140 @@
+<template>
+  <div class="topic-index flex">
+    <div class="topics">
+      <topic-intro-card
+        v-for="(t, index) in topics"
+        :key="index"
+        :topic="t"
+      />
+    </div>
+    <div class="aside gutter--8px">
+      <el-card class="user-card" :body-style="{ padding: '0' }">
+        <div class="user-avatar">
+          <img src="/static/img/avatar.png">
+        </div>
+        <el-row class="user-info">
+          <el-col :span="8" class="flex flex-column tc">
+            <span class="user-info-header">创建</span>
+            <span class="user-info-body">0</span>
+          </el-col>
+          <el-col :span="8" class="flex flex-column tc">
+            <span class="user-info-header">参与</span>
+            <span class="user-info-body">0</span>
+          </el-col>
+          <el-col :span="8" class="flex flex-column tc">
+            <span class="user-info-header">关注者</span>
+            <span class="user-info-body">0</span>
+          </el-col>
+        </el-row>
+      </el-card>
+      <el-card class="">
+        <div slot="header">话题分类</div>
+      </el-card>
+    </div>
+  </div>
+</template>
+
+<script>
+import Vue from 'vue'
+import { Card, Row, Col } from 'element-ui'
+import TopicIntroCard from '@/components/card/topic/intro'
+import { copyProps, normalizeTimestamp, isOk } from '../../utils'
+
+Vue.use(Card)
+Vue.use(Row)
+Vue.use(Col)
+
+export default {
+  name: 'TopicIndex',
+
+  components: {
+    TopicIntroCard,
+  },
+
+  data() {
+    return {
+      topics: [],
+      users: {},
+    }
+  },
+
+  methods: {
+    getData() {
+      this.$http.get(this.$apiRoutes.getTopics).then((res) => {
+        let data = res.data.map((item) => {
+          // 提取话题数据，通过复制处理
+          return copyProps(item, [
+            'id',
+            'content',
+            'title',
+            'views',
+            { from: 'user_id', to: 'userId' },
+            { from: 'created_time', to: 'createdTime', handler: normalizeTimestamp },
+            { from: 'updated_time', to: 'updatedTime', handler: normalizeTimestamp },
+          ])
+        })
+
+        for (let d of data) {
+          let id = d.userId
+          let url = `${this.$apiRoutes.getUser}/${id}`
+          this.$http.get(url).then((res) => {
+            this.users[id] = isOk(res.status)
+              ? res.data
+              : {}
+          })
+        }
+        this.topics = data
+      })
+    },
+  },
+
+  mounted() {
+    this.getData()
+  },
+}
+</script>
+
+<style lang="scss">
+.topic-index {
+  .topics {
+    flex-grow: 1;
+  }
+}
+
+.aside {
+  width: 250px;
+  flex: 0 0 250px;
+
+  & > * {
+    * + & {
+      margin-bottom: .5rem;
+    }
+  }
+
+  .user-card {
+    .user-avatar {
+      display: flex;
+      margin: 2rem 0;
+      img {
+        border-radius: 1rem;
+        height: 5rem;
+        margin: auto;
+      }
+    }
+
+    .user-info {
+      background-color: $color-light;
+      padding: .75rem;
+
+      & > * {
+        cursor: pointer;
+      }
+
+      .user-info-header {
+        color: $color-gray6;
+        font-size: 14px;
+      }
+    }
+  }
+}
+</style>

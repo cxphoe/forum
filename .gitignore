@@ -1,0 +1,7 @@
+/node_modules
+package-lock.json
+.editorconfig
+
+/__pycache__
+config.py
+log.gua.txt

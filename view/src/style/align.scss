@@ -1,0 +1,63 @@
+.items-center {
+  align-items: center;
+}
+
+.vertical-middle {
+  vertical-align: middle;
+}
+
+.m-auto {
+  margin: auto !important;
+}
+
+.mh-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mv-auto {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.ml-auto {
+  margin-left: auto;
+}
+
+.mr-auto {
+  margin-right: auto;
+}
+
+.tc {
+  text-align: center;
+}
+
+.tr {
+  text-align: right;
+}
+
+.v-align-none {
+  vertical-align: initial;
+}
+
+.v-middle {
+  height: 100%;
+}
+
+.v-middle:before {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  height: 100%;
+}
+
+.absolute-center {
+  * + & {
+    position: relative;
+  }
+
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}

@@ -1,0 +1,107 @@
+@import "./variable";
+
+.b {
+  border-style: solid;
+  border-width: 1px;
+}
+
+.bn {
+  border-style: none;
+  border-width: 0;
+}
+
+.bt {
+  border-top-style: solid;
+  border-top-width: 1px;
+}
+
+.bb {
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}
+
+.bl {
+  border-left-style: solid;
+  border-left-width: 1px;
+}
+
+.br {
+  border-right-style: solid;
+  border-right-width: 1px;
+}
+
+.br1 {
+  border-radius: .25rem;
+}
+
+.br2 {
+  border-radius: .5rem;
+}
+
+.br3 {
+  border-radius: .75rem;
+}
+
+.br4 {
+  border-radius: 1rem;
+}
+
+.br5 {
+  border-radius: 1.25rem;
+}
+
+.bw1 {
+  border-width: 0.125rem;
+}
+
+.bw2 {
+  border-width: .25rem;
+}
+
+.b-gray {
+  border-color: #f1f3f5;
+}
+
+.b-gray2 {
+  border-color: $color-gray2;
+}
+
+.b-gray3 {
+  border-color: $color-gray3;
+}
+
+.b-gray4 {
+  border-color: $color-gray4;
+}
+
+.b-gray5 {
+  border-color: $color-gray5;
+}
+
+.border-up-arrow {
+  &::before, &::after {
+    position: absolute;
+    top: -18px;
+    right: 100%;
+    left: 18px;
+    display: block;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    content: " ";
+    border-color: transparent;
+    border-style: solid;
+  }
+
+  &::before {
+    border-width: 9px;
+    border-bottom-color: #ddd;
+  }
+
+  &::after {
+    margin-top: 4px;
+    margin-left: 2px;
+    border-width: 7px;
+    border-bottom-color: #fff;
+  }
+}

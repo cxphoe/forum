@@ -1,0 +1,93 @@
+@import "variable";
+
+@media (max-width: $--breakpoint-sm) {
+  .hidden-xs-down {
+    display: none;
+  }
+}
+
+@media (max-width: $--breakpoint-md) {
+  .hidden-sm-down {
+    display: none;
+  }
+}
+
+@media (max-width: $--breakpoint-lg) {
+  .hidden-md-down {
+    display: none;
+  }
+}
+
+@media (max-width: $--breakpoint-xl) {
+  .hidden-lg-down {
+    display: none;
+  }
+}
+
+@media (min-width: $--breakpoint-sm) {
+  .hidden-xs-up {
+    display: none;
+  }
+}
+
+@media (min-width: $--breakpoint-md) {
+  .hidden-sm-up {
+    display: none;
+  }
+}
+
+@media (min-width: $--breakpoint-lg) {
+  .hidden-md-up {
+    display: none;
+  }
+}
+
+@media (min-width: $--breakpoint-xl) {
+  .hidden-lg-up {
+    display: none;
+  }
+}
+
+.block {
+  display: block;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.flex-column, .flex-row {
+  box-direction: normal;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.justify-sb {
+  justify-content: space-between;
+}
+
+.justify-sa {
+  justify-content: space-around;
+}
+
+.of-auto {
+  overflow: auto;
+}
+
+.ofx-hidden {
+  overflow-x: hidden;
+}
+
+.ofy-hidden {
+  overflow-y: hidden;
+}
