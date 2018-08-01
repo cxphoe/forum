@@ -4,6 +4,7 @@ import http from '@/http'
 import routes from '@/http/routes'
 import { isOk } from '@/utils'
 import { baseUrl } from '@/config'
+import { getUser } from '@/http/requests'
 
 Vue.use(Vuex)
 
@@ -11,6 +12,7 @@ export default new Vuex.Store({
   state: {
     currentUser: {},
     users: {},
+    token: null,
   },
 
   mutations: {
@@ -23,6 +25,14 @@ export default new Vuex.Store({
       let { id, user } = payload
       state.users[id] = user
     },
+
+    clearUsers(state) {
+      state.users = []
+    },
+
+    setToken(state, { token }) {
+      state.token = token
+    },
   },
 
   actions: {
@@ -34,6 +44,8 @@ export default new Vuex.Store({
           let user = res.data || null
           if (res.data) {
             user.avatar = `${baseUrl}${user.avatar}`
+            // 设置获得的 xsrf token
+            commit('setToken', { token: res.headers.token })
           }
           commit('setCurrentUser', { user })
         }
@@ -42,15 +54,8 @@ export default new Vuex.Store({
 
     getUser({ commit }, payload) {
       let { id } = payload
-      http.get(`${routes.getUser}/${id}`).then((res) => {
-        if (isOk(res.status)) {
-          let user = res.data
-          user.avatar = `${baseUrl}${user.avatar}`
-          commit('setUser', {
-            id,
-            user,
-          })
-        }
+      getUser(id, (user) => {
+        commit('setUser', { id, user })
       })
     },
   },

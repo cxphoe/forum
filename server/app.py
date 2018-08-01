@@ -82,6 +82,8 @@ if __name__ == '__main__':
     app.config['TEMPLATES_AUTO_RELOAD'] = True
     app.jinja_env.auto_reload = True
     app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
     config = dict(
         debug=True,
         host='0.0.0.0',

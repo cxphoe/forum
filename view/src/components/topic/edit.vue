@@ -25,7 +25,9 @@
 
 <script>
 import Vue from 'vue'
-import { Button } from 'element-ui'
+import { mapState } from 'vuex'
+import { Button, Notification } from 'element-ui'
+import { copyProps, isOk } from '@/utils'
 import TopicEditor from '../editor/topic_editor'
 
 Vue.use(Button)
@@ -37,35 +39,88 @@ export default {
     TopicEditor,
   },
 
+  props: {
+    topic: {
+      default() {
+        return {
+          title: '',
+          content: '',
+        }
+      }
+    },
+  },
+
   data() {
     return {
-      data: {
-        title: '测试',
-        content: [{ type: 'text', data: 'testing...' }],
-      },
+      data: [],
       imgs: {},
     }
+  },
+
+  computed: {
+    ...mapState([
+      'currentUser',
+    ]),
   },
 
   methods: {
     copy(o) {
       return JSON.parse(JSON.stringify(o))
     },
+    processTopic() {
+      const decomposeContent = function (c) {
+        if (!c) {
+          return []
+        }
+        let parts = []
+        for (let piece of c.split('\n')) {
+          parts.push({
+            type: 'text',
+            data: piece,
+          })
+        }
+        return parts
+      }
+      this.data = copyProps(this.topic, [
+        'title',
+        { from: 'content', to: 'content', handler: decomposeContent },
+      ])
+    },
+
     pulish() {
-      console.log(this.copy(this.data), this.copy(this.imgs))
+      console.log('pulish:', this.copy(this.data), this.copy(this.imgs), Object.keys(this.imgs))
       let form = new FormData()
       form.append('data', JSON.stringify(this.data))
-      Object.values(this.imgs).forEach((img) => {
-        let { name, file } = img
+      form.append('user_id', this.currentUser.id)
+      for (let key in this.imgs) {
+        let { name, file } = this.imgs[key]
+        console.log(`append file <${name}>`)
         form.append(name, file)
-      })
+      }
 
-      this.$http.post('/topic/add', form).then((res) => {
-        console.log(res)
-      }).catch((err) => {
-        console.error(err)
+      this.$http.post(this.$apiRoutes.addTopic, form).then((res) => {
+        if (isOk(res.status)) {
+          Notification({
+            title: '发表成功',
+            type: 'success',
+          })
+        } else {
+          Notification({
+            title: '发表失败',
+            type: 'error',
+          })
+        }
+      }).catch(() => {
+        Notification({
+          title: '服务器出错',
+          type: 'error',
+        })
       })
     },
+  },
+
+  created() {
+    this.processTopic()
   },
 }
 </script>

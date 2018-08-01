@@ -6,14 +6,17 @@
         <i class="fas fa-images"></i>
       </div>
     </div>
-    <div
-      ref="input"
-      class="content-area"
-      contenteditable="true"
-      @input="handleInput"
-      @focus="getSelect"
-      v-html="content"
-    ></div>
+    <div class="relative">
+      <div
+        ref="input"
+        class="content-area"
+        contenteditable="true"
+        @input="handleInput"
+        @focus="getSelect"
+        v-html="content"
+      ></div>
+      <div v-if="contentEmpty" class="content-note">请输入正文...</div>
+    </div>
   </div>
 </template>
 
@@ -72,9 +75,27 @@ export default {
     }
   },
 
+  computed: {
+    contentEmpty() {
+      let parts = this.value
+      return parts.length === 0
+        || (parts.length === 1 && parts[0].data === '')
+    },
+  },
+
   methods: {
     uploadImg(event) {
       this.$refs.imgInput.click()
+    },
+
+    isInArea($el) {
+      console.log('check $el\n', $el)
+      while ($el !== document.body && $el !== this.$refs.input) {
+        $el = $el.parentNode
+        console.log($el)
+      }
+      console.log('end check $el')
+      return $el === this.$refs.input
     },
 
     checkImg(event) {
@@ -82,29 +103,28 @@ export default {
       let file = $input.files[0]
       console.log(file)
       if (file) {
-        console.log(file)
         let imgUrl = URL.createObjectURL(file)
-        console.log(file)
         this.imgs[imgUrl] = {
           name: getFilename(file.name),
           file: file,
         }
         console.log(this.imgs)
         let s = this.lastSelect
-        if (s !== null) {
+        if (s !== null && this.isInArea(s)) {
           if (s.nodeName !== 'DIV') {
             s = s.parentNode
           }
           s.insertAdjacentHTML(
-            s === this.$el ? 'afterBegin' : 'afterEnd',
-            `<img src="${imgUrl}">`
+            s === this.$refs.input ? 'afterBegin' : 'afterEnd',
+            `<div><img src="${imgUrl}"></div>`
           )
+          this.handleInput()
         }
       }
     },
 
-    handleInput(event) {
-      let $el = event.target
+    handleInput() {
+      let $el = this.$refs.input
       this.$emit('input', this.retrieveHtml($el))
       this.getSelect(event)
     },
@@ -121,6 +141,7 @@ export default {
       let parts = []
       for (let child of htmlElement.childNodes) {
         let data = this.processNode[child.nodeName](child)
+        // console.log('retrieve:', data)
         if (data instanceof Array) {
           parts.push(...data)
         } else {
@@ -135,7 +156,7 @@ export default {
       setTimeout(() => {
         this.lastSelect = s.anchorNode
         // this.$emit('update:lastSelect', s.anchorNode)
-        console.log(s)
+        // console.log(s)
       }, 0)
     },
   }
@@ -143,9 +164,30 @@ export default {
 </script>
 
 <style lang="scss">
-.content-area {
-  border: none !important;
-  outline: none;
-  resize: none;
+.content-editor {
+  .content-area {
+    min-height: 300px;
+    outline: none;
+    padding: 0 0 20rem;
+    border: none !important;
+    height: 100%;
+    outline: none;
+    resize: none;
+
+    img {
+      left: 2.5%;
+      margin: 0 auto;
+      position: relative;
+      width: 95%;
+    }
+  }
+
+  .content-note {
+    color: $color-gray5;
+    left: 0;
+    position: absolute;
+    top: 0;
+    user-select: none;
+  }
 }
 </style>

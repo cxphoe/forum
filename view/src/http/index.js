@@ -1,14 +1,15 @@
 import axios from 'axios'
 import { log } from '@/utils'
-// import { baseUrl } from '@/config'
+import { baseUrl } from '@/config'
 
-// axios.defaults.baseURL = baseUrl
+axios.defaults.baseURL = baseUrl
+axios.defaults.xsrfCookieName = '_xsrf'
 
 // 添加一个请求拦截器
 axios.interceptors.request.use(function (config) {
   // Do something before request is sent
   // 跨域请求带凭证
-  config.withCredentials = true
+  // config.withCredentials = true
   config.validateStatus = function (status) {
     return status < 500 // 状态码在大于或等于500时才会 reject
   }

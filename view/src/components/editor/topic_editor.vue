@@ -88,15 +88,5 @@ export default {
       }
     }
   }
-
-  .content-editor {
-    min-height: 300px;
-    outline: none;
-    padding: 0 0 20rem;
-
-    img {
-      width: 100%;
-    }
-  }
 }
 </style>

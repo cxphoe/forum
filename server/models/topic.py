@@ -13,7 +13,7 @@ class Topic(SQLMixin, db.Model):
     user_id = Column(Integer, ForeignKey('User.id'), nullable=False)
 
     @classmethod
-    def new(cls, form, user_id=1):
+    def new(cls, form, user_id):
         form['user_id'] = user_id
         m = super().new(form)
         return m
@@ -25,15 +25,6 @@ class Topic(SQLMixin, db.Model):
         m.views += 1
         m.save()
         return m
-
-
-    # def user(self):
-    #     u = User.one(id=self.user_id)
-    #     return u
-
-    # def replies(self):
-    #     ms = Reply.all(topic_id=self.id)
-    #     return ms
 
     def reply_count(self):
         count = len(self.replies())

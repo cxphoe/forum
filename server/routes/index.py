@@ -8,6 +8,7 @@ from flask import (
     redirect,
     request,
 )
+import uuid
 
 from models.user import User
 from utils import log
@@ -28,9 +29,15 @@ def current_user():
             'avatar': u.avatar,
             'username': u.username,
         }
+        token = uuid.uuid4()
+        resp = make_response(jsonify(data), 200)
+        token = bytes(str(token), encoding='utf-8')
+        resp.set_cookie('_xsrf', token, httponly=True)
+        resp.headers['token'] = token
     else:
         data = None
-    return jsonify(data)
+        resp = make_response(None, 200)
+    return resp
 
 
 @main.route('/login', methods=['POST'])

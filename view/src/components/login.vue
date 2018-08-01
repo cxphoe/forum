@@ -1,11 +1,6 @@
 <template>
   <div class="login-wrapper">
-    <div class="background">
-      <span/>
-      <span/>
-      <span/>
-      <span/>
-    </div>
+    <img src="static/img/bg.png">
     <el-card class="board">
       <transition :name="transitionName" mode="out-in">
         <div :key="1" v-if="mode === 'login'" class="flex flex-column">
@@ -232,48 +227,6 @@ export default {
   padding: 0 !important;
   position: relative;
   margin: 0 !important;
-
-  .background {
-    background: linear-gradient(-150deg, #222222 15%, #373737 70%, #3c4859 94%);
-    height: 140%;
-    position: absolute;
-    transform: skewY(12deg);
-    transform-origin: 100%;
-    width: 100%;
-
-    span:nth-child(1) {
-      background: #2e2e2e;
-      bottom: auto;
-      left: auto;
-      right: 16.66666%;
-      top: 25%;
-    }
-
-    span:nth-child(2) {
-      background: #222222;
-      bottom: auto;
-      left: auto;
-      right: 50%;
-    }
-
-    span:nth-child(3) {
-      background: #383d44;
-      left: -16.66666%;
-      top: 50%;
-    }
-
-    span:nth-child(4) {
-      background: #2e2e2e;
-      right: 0;
-      top: 60%;
-    }
-
-    span {
-      height: 20%;
-      position: absolute;
-      width: 33.33333%;
-    }
-  }
 
   .board {
     border-radius: .5rem;

@@ -1,4 +1,4 @@
-const baseUrl = 'http://localhost:2000'
+const baseUrl = '/api'
 
 export {
   baseUrl,

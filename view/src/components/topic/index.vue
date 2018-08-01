@@ -36,9 +36,10 @@
 
 <script>
 import Vue from 'vue'
+import { mapMutations } from 'vuex'
 import { Card, Row, Col } from 'element-ui'
 import TopicIntroCard from '@/components/card/topic/intro'
-import { copyProps, normalizeTimestamp, isOk } from '../../utils'
+import { copyProps, normalizeTimestamp } from '../../utils'
 
 Vue.use(Card)
 Vue.use(Row)
@@ -54,7 +55,6 @@ export default {
   data() {
     return {
       topics: [],
-      users: {},
     }
   },
 
@@ -74,21 +74,18 @@ export default {
           ])
         })
 
-        for (let d of data) {
-          let id = d.userId
-          let url = `${this.$apiRoutes.getUser}/${id}`
-          this.$http.get(url).then((res) => {
-            this.users[id] = isOk(res.status)
-              ? res.data
-              : {}
-          })
-        }
         this.topics = data
       })
     },
+
+    ...mapMutations([
+      'clearUsers',
+    ]),
   },
 
   mounted() {
+    // 每次刷新页面时把缓存的用户数据清除
+    this.clearUsers()
     this.getData()
   },
 }

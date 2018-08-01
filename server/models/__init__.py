@@ -4,6 +4,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, String
 
+from utils import log
+
 db = SQLAlchemy()
 
 class SQLMixin(object):
@@ -23,6 +25,13 @@ class SQLMixin(object):
         return m
 
     @classmethod
+    def delete(cls, id):
+        m = cls.one(id=id)
+
+        db.session.delete(m)
+        db.session.commit()
+
+    @classmethod
     def update(cls, id, **kwargs):
         # u.username = 'test'
         # db.session.add(u)
@@ -38,7 +47,6 @@ class SQLMixin(object):
     def all(cls, **kwargs):
         ms = cls.query.filter_by(**kwargs).all()
         return ms
-
 
     @classmethod
     def one(cls, **kwargs):
@@ -64,9 +72,8 @@ class SQLMixin(object):
 
     def json(self):
         d = {}
-        attrs = self.__dict__
         for column, _ in self.columns():
-            d[column] = attrs[column]
+            d[column] = getattr(self, column)
         return d
 
     @classmethod

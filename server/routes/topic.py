@@ -1,12 +1,20 @@
-import os, uuid, json
+import json
 from flask import (
+    abort,
     Blueprint,
     jsonify,
+    make_response,
     redirect,
     request,
+    session,
     url_for,
 )
 
+from routes import (
+    processImg,
+    same_user_required,
+    xsrf_token_required,
+)
 from models.topic import Topic
 from utils import log
 
@@ -20,21 +28,21 @@ def index():
 
 @main.route('/<int:id>')
 def detail(id):
-    log(id)
     t = Topic.get(id)
-    log(t)
     return jsonify(t.json())
 
 
-def processImg(file):
-    # ../../root/.ssh/authorized_keys
-    # filename = secure_filename(file.filename)
-    suffix = file.filename.split('.')[-1]
-    filename = '{}.{}'.format(str(uuid.uuid4()), suffix)
-    path = os.path.join('images', filename)
-    file.save(path)
+def process_content_data(data, files):
+    get_content = {
+        'text': lambda item: item['data'],
+        'image': lambda item: '<img src="{}">'.format(processImg(files[item['name']])),
+    }
 
-    return '<img src="/images/{}">'.format(filename)
+    log(files, data['content'])
+    content_parts = []
+    for item in data['content']:
+        content_parts.append(get_content[item['type']](item))
+    data['content'] = '\n'.join(content_parts)
 
 
 @main.route('/add', methods=['POST'])
@@ -46,21 +54,40 @@ def add():
         { 'type': 'img', 'name': 文件名字（用于在 request.files 中查找文件）, 'data': 图片src }
     """
     files = request.files
+    form = request.form
 
-    get_content = {
-        'text': lambda item: item['data'],
-        'image': lambda item: processImg(files[item['name']]),
-    }
+    data = json.loads(form['data'])
+    process_content_data(data, files)
 
-    data = json.loads(request.form['data'])
-    log(files, data['content'])
-    content_parts = []
-    for item in data['content']:
-        content_parts.append(get_content[item['type']](item))
-    data['content'] = '\n'.join(content_parts)
+    uid = form['user_id']
 
-    t = Topic.new(data)
+    t = Topic.new(data, uid)
     t.save()
 
     return ''
+
+
+@main.route('/delete/<int:id>')
+@xsrf_token_required
+@same_user_required(Topic)
+def delete(id):
+    Topic.delete(id)
+    return make_response('删除成功', 200)
+
+
+@main.route('/update/<int:id>')
+@same_user_required(Topic)
+def update(id):
+    t = Topic.one(id=id)
+    if t is None:
+        abort(404)
+    else:
+        files = request.files
+        form = request.form
+
+        data = json.loads(form['data'])
+        process_content_data(data, files)
+
+        Topic.update(id, **data)
+        return make_response('编辑成功', 200)
 

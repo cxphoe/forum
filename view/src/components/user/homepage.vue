@@ -21,8 +21,7 @@
 <script>
 import Vue from 'vue'
 import { Card } from 'element-ui'
-import { baseUrl } from '@/config'
-import { isOk, copyProps } from '@/utils'
+import { getUserDetail } from '@/http/requests'
 
 Vue.use(Card)
 
@@ -37,17 +36,8 @@ export default {
 
   created() {
     let id = this.$route.params.id
-    let url = `${this.$apiRoutes.getUserDetail}/${id}`
-    this.$http.get(url).then((res) => {
-      if (isOk(res.status)) {
-        let data = res.data
-        let user = copyProps(data, [
-          'username',
-          'topics',
-          { from: 'avatar', to: 'avatar', handler: a => baseUrl + a },
-        ])
-        this.user = user
-      }
+    getUserDetail(id, (user) => {
+      this.user = user
     })
   },
 }

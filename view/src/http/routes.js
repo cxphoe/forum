@@ -1,6 +1,7 @@
 // api 路由
 const routes = {
   currentUser: '/current-user',
+  updateUser: '/user/update',
   getUser: '/user',
   getUserDetail: '/user/detail',
   login: '/login',
@@ -8,10 +9,8 @@ const routes = {
   register: '/register',
   getTopics: '/topic/',
   getSingleTopic: '/topic',
+  addTopic: '/topic/add',
+  deleteTopic: '/topic/delete',
 }
-
-Object.keys(routes).forEach((k) => {
-  routes[k] = `/api${routes[k]}`
-})
 
 export default routes

@@ -27,7 +27,7 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     // 函数表达式必须有名字s
     "func-names": [0],
-    "new-cap": [2, { newIsCap: true ,capIsNew: true, capIsNewExceptions: ['List', 'Map']}],
+    "new-cap": [0, { newIsCap: true ,capIsNew: true, capIsNewExceptions: ['List', 'Map']}],
     "linebreak-style": [0],
     "brace-style": [2, "1tbs", { "allowSingleLine": false }],
     "camelcase": 2,

@@ -1,6 +1,12 @@
 <template>
   <el-card class="user-setting">
-    <div class="avatar">
+    <input
+      ref="avatar" type="file"
+      @change="handleImg"
+      accept="image/jpg, image/jpeg, image/png"
+      hidden
+    >
+    <div class="avatar" @click="avatarUpload">
       <img :src="user.avatar">
       <div class="note">
         <i class="fas fa-camera"></i>
@@ -9,10 +15,10 @@
     </div>
     <el-form :model="user" class="user-form" label-width="80px">
       <el-form-item label="用户名字">
-        <el-input v-model="user.username"/>
+        <el-input v-model="user.username" @change="handleChange($event, 'username')"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="upload">提交</el-button>
+        <el-button type="primary" @click="upload">保存</el-button>
       </el-form-item>
     </el-form>
   </el-card>
@@ -20,8 +26,10 @@
 
 <script>
 import Vue from 'vue'
-import { Button, Card, Form, FormItem, Input } from 'element-ui'
-import { baseUrl } from '@/config'
+import { mapActions } from 'vuex'
+import { Button, Card, Form, FormItem, Input, Notification } from 'element-ui'
+import { buildFormdata, isOk } from '@/utils'
+import { getUser } from '@/http/requests'
 
 Vue.use(Button)
 Vue.use(Card)
@@ -35,22 +43,66 @@ export default {
   data() {
     return {
       user: {},
+      avatarFile: null,
+      uploadData: {},
     }
   },
 
   methods: {
     getUser(id) {
-      let url = `${this.$apiRoutes.getUser}/${id}`
-      this.$http.get(url).then((res) => {
-        let u = res.data
-        u.avatar = baseUrl + u.avatar
-        this.user = u
+      getUser(id, (user) => {
+        this.user = user
+      }, () => {
+        Notification({
+          title: '用户数据数据不存在',
+          type: 'error',
+        })
       })
     },
 
-    upload() {
-      
+    handleImg(event) {
+      let file = event.target.files[0]
+      if (file) {
+        let url = URL.createObjectURL(file)
+        this.user.avatar = url
+        this.uploadData.avatar = file
+      }
     },
+
+    handleChange(value, prop) {
+      this.uploadData[prop] = value
+    },
+
+    avatarUpload() {
+      this.$refs.avatar.click()
+    },
+
+    upload() {
+      let form = buildFormdata(this.uploadData)
+      this.$http.post(`${this.$apiRoutes.updateUser}/${this.user.id}`, form).then((res) => {
+        if (isOk(res.status)) {
+          Notification({
+            title: '修改成功',
+            type: 'success',
+          })
+          this.getCurrentUser()
+        } else {
+          Notification({
+            title: '修改失败',
+            type: 'error',
+          })
+        }
+      })
+    },
+
+    clear() {
+      this.uploadData = {}
+      this.avatarFile = null
+    },
+
+    ...mapActions([
+      'getCurrentUser',
+    ]),
   },
 
   created() {

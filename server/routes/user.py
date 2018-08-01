@@ -9,6 +9,7 @@ from flask import (
     request,
 )
 
+from routes import processImg
 from models.user import User
 from utils import log
 
@@ -44,3 +45,25 @@ def user_detail(id):
             'topics': topics
         }
         return jsonify(data)
+
+
+@main.route('/update/<int:id>', methods=['POST'])
+def user_update(id):
+    uid = session.get('user_id')
+    if uid == id:
+        # 更新user的数据
+        form = request.form.to_dict()
+        files = request.files
+        avatar= files.get('avatar')
+        if avatar is not None:
+            url = processImg(avatar)
+            form['avatar'] = url
+        log('update data:', form)
+        u = User.one(id=uid)
+        for k, v in form.items():
+            setattr(u, k, v)
+        u.save()
+        resp = make_response('设置成功', 200)
+    else:
+        resp = make_response('认证失败，无法设置', 401)
+    return resp
