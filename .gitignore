@@ -2,6 +2,6 @@
 package-lock.json
 .editorconfig
 
-/__pycache__
+*.pyc
 config.py
 log.gua.txt
