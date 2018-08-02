@@ -57,8 +57,9 @@
           </div>
         </li>
         <li>
-          <div v-popover:message class="link gray6 f4">
+          <div v-popover:message class="link gray6 f4 relative">
             <i class="fas fa-comments"></i>
+            <div v-if="newMessages.length > 0" class="absolute sign-note" />
           </div>
         </li>
         <li>
@@ -126,11 +127,18 @@ Vue.use(Popover)
 export default {
   name: 'Nav',
 
-  computed: mapState([
-    'currentUser',
-    'isGuest',
-    'messages',
-  ]),
+  computed: {
+    newMessages() {
+      // 返回还没被读过的信息
+      return this.messages.filter((m) => m.read === false)
+    },
+
+    ...mapState([
+      'currentUser',
+      'isGuest',
+      'messages',
+    ]),
+  },
 
   methods: {
     toHomepage() {
@@ -211,6 +219,15 @@ export default {
       &.icons {
         & > li + li {
           margin-left: 2rem;
+        }
+
+        .sign-note {
+          background: $color-contrary;
+          border-radius: 50%;
+          padding: .25rem;
+          position: absolute;
+          right: 0;
+          top: 4px;
         }
       }
     }
