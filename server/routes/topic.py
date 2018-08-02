@@ -15,6 +15,7 @@ from routes import (
     xsrf_token_required,
 )
 from models.topic import Topic
+from models.reply import Reply
 from utils import log
 
 main = Blueprint('server_topic', __name__)
@@ -22,7 +23,13 @@ main = Blueprint('server_topic', __name__)
 
 @main.route('/')
 def index():
-    return jsonify(Topic.all_json())
+    jsons = Topic.all_json()
+    for j in jsons:
+        tid = j['id']
+        rs = Reply.all(topic_id=tid)
+        j['reply_count'] = len(rs)
+    log('topics:', jsons)
+    return jsonify(jsons)
 
 
 @main.route('/<int:id>')

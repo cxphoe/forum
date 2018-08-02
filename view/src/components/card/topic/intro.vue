@@ -4,9 +4,19 @@
   >
     <div slot="header" class="f2 topic-meta">
       <div class="flex items-center">
-        <img class="avatar mr3" :src="user.avatar">
+        <router-link
+          :to="{ name: 'userHomepage', params: { id: topic.userId } }"
+          class="link"
+        >
+          <img class="avatar mr3" :src="user.avatar">
+        </router-link>
         <div class="flex flex-column">
-          <span class="f3 mb fw6">{{ user.username }}</span>
+          <router-link
+            :to="{ name: 'userHomepage', params: { id: topic.userId } }"
+            class="link"
+          >
+            <span class="f3 mb fw6">{{ user.username }}</span>
+          </router-link>
           <span class="lh-solid mb1 gray6">{{ topic.updatedTime | dateFormat }}</span>
         </div>
       </div>
@@ -27,6 +37,16 @@
         <h3 class="f4 fw6">{{ topic.title }}</h3>
         <div class="topic-content" :style="{ height: firstImg ? '6rem' : '3rem' }">{{ topic.content }}</div>
       </div>
+    </div>
+    <div class="mt2 f2 gray5">
+      <span class="mr3">
+        <i class="fas fa-eye"></i>
+        <span class="ml1">{{ topic.views }} 次浏览</span>
+      </span>
+      <span>
+        <i class="fas fa-comments"></i>
+        <span class="ml1">{{ topic.replyCount }} 条评论</span>
+      </span>
     </div>
   </el-card>
 </template>

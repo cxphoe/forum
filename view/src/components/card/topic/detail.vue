@@ -6,10 +6,18 @@
     >
       <div class="f2 topic-detail-header">
         <div class="flex items-center">
-          <img class="avatar mr3" :src="user.avatar">
-          <div class="f3 mb fw6">{{ user.username }}</div>
+          <router-link
+            :to="{ name: 'userHomepage', params: { id: topic.userId } }"
+            class="link"
+          >
+            <img class="avatar mr3" :src="user.avatar">
+            <span class="f3 mb fw6">{{ user.username }}</span>
+          </router-link>
         </div>
-        <div class="lh-solid mb1 gray6 f3">编辑于 {{ topic.updatedTime | dateFormat }}</div>
+        <div class="lh-solid mb1 gray6 f3 flex items-center">
+          <div class="mr3">编辑于 {{ topic.updatedTime | dateFormat }}</div>
+          <topic-operation :topic-id="topic.id" />
+        </div>
       </div>
       <div class="topic-detail-body">
         <div class="topic-content markdown-body" v-html="formattedContent"></div>
@@ -32,8 +40,13 @@
             class="reply"
           >
             <div class="flex items-center mb2">
-              <img class="avatar mr3" :src="r.user.avatar">
-              <div class="mr3">{{ r.user.username }}</div>
+              <router-link
+                :to="{ name: 'userHomepage', params: { id: r.userId } }"
+                class="link"
+              >
+                <img class="avatar mr3" :src="r.user.avatar">
+                <span class="mr3">{{ r.user.username }}</span>
+              </router-link>
               <div class="gray5">{{ r.createdTime | dateFormat }}</div>
             </div>
             <div class="">{{ r.content }}</div>
@@ -48,6 +61,7 @@
 import Vue from 'vue'
 import { Card } from 'element-ui'
 import ReplyEditor from '@/components/editor/reply_editor'
+import TopicOperation from './operation'
 import marked from 'marked'
 import {
   isOk,
@@ -65,6 +79,7 @@ export default {
 
   components: {
     ReplyEditor,
+    TopicOperation,
   },
 
   data() {
@@ -121,6 +136,7 @@ export default {
               'id',
               'content',
               'user',
+              { from: 'user_id', to: 'userId' },
               { from: 'created_time', to: 'createdTime', handler: normalizeTimestamp },
             ])
             result.user.avatar = baseUrl + result.user.avatar

@@ -3,6 +3,8 @@ from sqlalchemy.orm import relationship
 import hashlib
 
 from models import SQLMixin, db
+from models.reply import Reply
+from models.topic import Topic
 
 class User(SQLMixin, db.Model):
     """
@@ -64,3 +66,11 @@ class User(SQLMixin, db.Model):
             return user
         else:
             return None
+
+    def involved_ts_count(self):
+        rs = Reply.all(user_id=self.id)
+        ts = {}
+        for r in rs:
+            tid = r.topic_id
+            ts[tid] = tid
+        return len(ts.keys())

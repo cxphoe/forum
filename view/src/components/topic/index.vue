@@ -12,16 +12,16 @@
     <div class="aside gutter--8px">
       <el-card class="user-card" :body-style="{ padding: '0' }">
         <div class="user-avatar">
-          <img src="/static/img/avatar.png">
+          <img :src="currentUser.avatar">
         </div>
         <el-row class="user-info">
           <el-col :span="8" class="flex flex-column tc">
             <span class="user-info-header">创建</span>
-            <span class="user-info-body">0</span>
+            <span class="user-info-body">{{ currentUser.topicCount }}</span>
           </el-col>
           <el-col :span="8" class="flex flex-column tc">
             <span class="user-info-header">参与</span>
-            <span class="user-info-body">0</span>
+            <span class="user-info-body">{{ currentUser.involvedCount }}</span>
           </el-col>
           <el-col :span="8" class="flex flex-column tc">
             <span class="user-info-header">关注者</span>
@@ -38,7 +38,7 @@
 
 <script>
 import Vue from 'vue'
-import { mapMutations } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import { Card, Row, Col } from 'element-ui'
 import TopicIntroCard from '@/components/card/topic/intro'
 import { copyProps, normalizeTimestamp } from '../../utils'
@@ -60,6 +60,10 @@ export default {
     }
   },
 
+  computed: mapState([
+    'currentUser',
+  ]),
+
   methods: {
     getData() {
       this.$http.get(this.$apiRoutes.getTopics).then((res) => {
@@ -70,11 +74,11 @@ export default {
             'content',
             'title',
             'views',
+            { from: 'reply_count', to: 'replyCount' },
             { from: 'user_id', to: 'userId' },
             { from: 'created_time', to: 'createdTime', handler: normalizeTimestamp },
             { from: 'updated_time', to: 'updatedTime', handler: normalizeTimestamp },
           ])
-          t.shown = false
           return t
         })
 

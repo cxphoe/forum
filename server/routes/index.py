@@ -24,13 +24,19 @@ def current_user():
     log('session', session, uid, session.new)
     u = User.one(id=uid)
     if u is not None:
+        ts = u.topics
+        involved_ts_count = u.involved_ts_count()
         data = {
             'id': u.id,
             'avatar': u.avatar,
             'username': u.username,
+            'topic_count': len(ts),
+            'involved_count': involved_ts_count,
         }
-        token = uuid.uuid4()
         resp = make_response(jsonify(data), 200)
+
+        # 设置 xsrf token
+        token = uuid.uuid4()
         token = bytes(str(token), encoding='utf-8')
         resp.set_cookie('_xsrf', token, httponly=True)
         resp.headers['token'] = token

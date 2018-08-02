@@ -162,7 +162,7 @@ export default {
             title: res.data,
             type: 'success',
           })
-          this.$store.commit('clearCurrentUser')
+          // this.$store.commit('clearCurrentUser')
           this.$store.dispatch('getCurrentUser')
         }
       })

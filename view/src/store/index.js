@@ -5,6 +5,7 @@ import routes from '@/http/routes'
 import { isOk } from '@/utils'
 import { baseUrl } from '@/config'
 import { getUser } from '@/http/requests'
+import { copyProps } from '../utils'
 
 Vue.use(Vuex)
 
@@ -20,6 +21,7 @@ export default new Vuex.Store({
   mutations: {
     setCurrentUser(state, payload) {
       let { user } = payload
+      console.log(user)
       state.currentUser = user
       state.isGuest = !!user.is_guest
     },
@@ -54,18 +56,22 @@ export default new Vuex.Store({
     getCurrentUser({ commit, dispatch }) {
       http.get(routes.currentUser).then((res) => {
         if (isOk(res.status)) {
-          // 如果没有返回用户数据，说明当前没有 cookie 或 cookie 已过期
-          // 直接返回一个空对象
-          let user = res.data || null
-          if (res.data) {
-            user.avatar = `${baseUrl}${user.avatar}`
-            // 设置获得的 xsrf token
-            let t = res.headers.token
-            t && commit('setToken', { token: t })
+          // 会接受到表示用户的数据 或者 游客数据
+          let user = copyProps(res.data, [
+            'id',
+            'avatar',
+            'username',
+            'is_guest',
+            { from: 'topic_count', to: 'topicCount' },
+            { from: 'involved_count', to: 'involvedCount' },
+          ])
+          user.avatar = `${baseUrl}${user.avatar}`
+          // 设置获得的 xsrf token
+          let t = res.headers.token
+          t && commit('setToken', { token: t })
 
-            // 得到 token 之后，再获取 私信/信息
-            dispatch('getMessages', { token: t })
-          }
+          // 得到 token 之后，再获取 私信/信息
+          dispatch('getMessages', { token: t })
           commit('setCurrentUser', { user })
         }
       })
