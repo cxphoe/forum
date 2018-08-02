@@ -7,20 +7,60 @@ const log = function (...args) {
   console.log(now.toLocaleString(), ...args)
 }
 
+/**
+ * 检查响应状态是否成功
+ * @param { Number | String } status response.status
+ */
 const isOk = function (status) {
   status = Number(status)
   return status >= 200 && status < 304
 }
 
 /**
+ * 得到日期实例的各个时间部分
+ * @param { Date } date 时间
+ */
+const timeParts = function (date) {
+  return {
+    year: date.getFullYear(),
+    month: date.getMonth() + 1,
+    day: date.getDate(),
+    hour: date.getHours(),
+    minute: date.getMinutes(),
+    sec: date.getSeconds(),
+  }
+}
+
+/**
  * 根据时间戳返回时间格式
  */
 const dateFormat = function (timestamp) {
+  const format = function (n) {
+    return n.toString().padStart(2, '0')
+  }
+
   let date = new Date(timestamp)
-  let year = date.getFullYear()
-  let month = date.getMonth() + 1
-  let day = date.getDate()
-  return `${month}月 ${day < 10 ? '0' + day : day}, ${year}`
+  let now = new Date()
+  let dateParts = timeParts(date)
+  let nowParts = timeParts(now)
+
+  if (dateParts.year < nowParts.year) {
+    return `${dateParts.year}月 ${format(dateParts.day)}, ${dateParts.year}`
+  }
+
+  let props = [
+    ['month', '月'],
+    ['day', '天'],
+  ]
+
+  for (let [prop, des] of props) {
+    let diff = nowParts[prop] - dateParts[prop]
+    if (diff > 0) {
+      return `${diff} ${des}前`
+    }
+  }
+
+  return `${format(dateParts.hour)}:${format(dateParts.minute)}`
 }
 
 /**
@@ -55,7 +95,7 @@ const getFilename = function (name) {
 }
 
 /**
- * 格式化时间戳
+ * 格式化时间戳，确保有13位
  */
 const normalizeTimestamp = (ts) => {
   ts = ts.toString()

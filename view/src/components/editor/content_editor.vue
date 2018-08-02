@@ -22,6 +22,7 @@
 
 <script>
 import { getFilename } from '@/utils'
+import { baseUrl } from '@/config'
 
 const processPart = {
   text(data) {
@@ -33,6 +34,16 @@ const processPart = {
   img(data) {
     return `<img src=${data}>`
   },
+}
+
+const removeBaseUrl = function (url) {
+  let sign = baseUrl
+  let i = url.indexOf(sign)
+  if (i > -1) {
+    url = url.substring(i + sign.length)
+  }
+  console.log('url:', url)
+  return url
 }
 
 export default {
@@ -52,15 +63,22 @@ export default {
         '#text'(node) {
           return {
             type: 'text',
-            data: node.data
+            data: node.data,
           }
         },
         IMG: (node) => {
-          return {
-            type: 'image',
-            data: node.src,
-            name: getFilename(this.imgs[node.src].name)
-          }
+          // 判断这张图片是否在上传文件中，如果没有，说明是文章原有的图片
+          // 去掉链接中的 baseUrl，按文本返回
+          return node.src in this.imgs
+            ? {
+              type: 'image',
+              data: node.src,
+              name: getFilename(this.imgs[node.src].name),
+            }
+            : {
+              type: 'text',
+              data: `<img src="${removeBaseUrl(node.src)}">`,
+            }
         },
         BR(node) {
           return {
@@ -159,7 +177,7 @@ export default {
         // console.log(s)
       }, 0)
     },
-  }
+  },
 }
 </script>
 

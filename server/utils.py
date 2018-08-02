@@ -9,3 +9,9 @@ def log(*args, **kwargs):
         print(formatted, *args, **kwargs)
         print(formatted, *args, file=f, **kwargs)
 
+
+def copy_attrs(attrs, src):
+    d = {}
+    for a in attrs:
+        d[a] = getattr(src, a)
+    return d

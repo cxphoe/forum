@@ -7,7 +7,9 @@ from datetime import timedelta
 import config
 
 from models import db
+from models.reply import Reply
 from models.topic import Topic
+from models.user import User
 
 from utils import log
 
@@ -17,27 +19,10 @@ from utils import log
 from routes.index import main as index_routes
 from routes.topic import main as topic_routes
 from routes.user import main as user_routes
-# from routes.reply import main as reply_routes
+from routes.reply import main as reply_routes
+from routes.message import main as message_routes
 
 import config
-
-
-def count(input):
-    log('count using jinja filter')
-    return len(input)
-
-
-def time_format(milliseconds):
-    log('time_format using jinja filter')
-    return '{} 毫秒'.format(milliseconds)
-
-
-def check_signature(s):
-    s = s.strip()
-    if len(s) == 0:
-        s = '这家伙很懒，什么个性签名都没有留下。'
-    return s
-
 
 def configured_app():
     app = Flask(__name__)
@@ -58,16 +43,13 @@ def configured_app():
     app.register_blueprint(index_routes)
     app.register_blueprint(topic_routes, url_prefix='/topic')
     app.register_blueprint(user_routes, url_prefix='/user')
-    # app.register_blueprint(reply_routes, url_prefix='/reply')
-
-    app.template_filter()(count)
-    app.template_filter()(time_format)
-    app.template_filter()(check_signature)
+    app.register_blueprint(reply_routes, url_prefix='/reply')
+    app.register_blueprint(message_routes, url_prefix='/message')
 
     admin = Admin(app, name='phoe', template_mode='bootstrap3')
-    # admin.add_view(ModelView(User, db.session))
+    admin.add_view(ModelView(User, db.session))
     admin.add_view(ModelView(Topic, db.session))
-    # admin.add_view(ModelView(Reply, db.session))
+    admin.add_view(ModelView(Reply, db.session))
     # Add administrative views here
 
     return app

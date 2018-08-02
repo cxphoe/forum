@@ -1,5 +1,11 @@
 <template>
   <div>
+    <router-link
+      :to="{ name: 'topicEdit', query: { topicId, mode: 'modify' } }"
+      ref="toEditor"
+      target="_blank"
+      hidden
+    />
     <el-button size="small" type="primary" @click="editTopic">编辑</el-button>
     <el-button size="small" type="danger" @click="deleteTopic">删除</el-button>
   </div>
@@ -54,7 +60,9 @@ export default {
       }).catch(() => notifyFail('服务器出错'))
     },
 
-    editTopic() {},
+    editTopic() {
+      this.$refs.toEditor.$el.click()
+    },
   },
 }
 </script>

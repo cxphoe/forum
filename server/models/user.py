@@ -14,9 +14,17 @@ class User(SQLMixin, db.Model):
     username = Column(String(50), nullable=False)
     password = Column(String(256), nullable=False)
     avatar = Column(String(100), nullable=False, default='/images/user_default.png')
-    # 于话题关联
+    # 与话题关联
     topics = relationship('Topic')
 
+    @classmethod
+    def guest(cls):
+        guest = {
+            'username': '游客',
+            'avatar': 'images/user_default.png',
+            'is_guest': True,
+        }
+        return guest
 
     @classmethod
     def salted_password(cls, password, salt='$!@><?>HUI&DWQa`'):

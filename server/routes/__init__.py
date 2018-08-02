@@ -89,9 +89,37 @@ def xsrf_token_required(route_fn):
     def fn(*args, **kwargs):
         _xsrf = request.cookies.get('_xsrf')
         token = request.args.get('token')
+        log(_xsrf, token)
         if _xsrf is not None and _xsrf == token:
             return route_fn(*args, **kwargs)
         else:
             # xsrf 不相等，说明不是用户操作
             abort(401)
     return fn
+
+
+def login_required(route_fn):
+
+    @wraps(route_fn)
+    def fn(*args, **kwargs):
+        uid = session.get('user_id', -1)
+        u = User.one(id=uid)
+        if u is None:
+            abort(401)
+        else:
+            return route_fn(*args, **kwargs)
+    return fn
+
+
+def users_from_content(content):
+    parts = content.split()
+    users = []
+
+    for p in parts:
+        if p[0] == '@':
+            name = p[1:]
+            u = User.one(username=name)
+            if u is not None:
+                users.append(u)
+    log('users:', users)
+    return users

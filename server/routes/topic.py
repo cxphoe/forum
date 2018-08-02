@@ -4,11 +4,10 @@ from flask import (
     Blueprint,
     jsonify,
     make_response,
-    redirect,
     request,
     session,
-    url_for,
 )
+import time
 
 from routes import (
     processImg,
@@ -75,7 +74,8 @@ def delete(id):
     return make_response('删除成功', 200)
 
 
-@main.route('/update/<int:id>')
+@main.route('/update/<int:id>', methods=['POST'])
+@xsrf_token_required
 @same_user_required(Topic)
 def update(id):
     t = Topic.one(id=id)
@@ -87,6 +87,8 @@ def update(id):
 
         data = json.loads(form['data'])
         process_content_data(data, files)
+        # 更新编辑时间
+        data['updated_time'] = time.time()
 
         Topic.update(id, **data)
         return make_response('编辑成功', 200)

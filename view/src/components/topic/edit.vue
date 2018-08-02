@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="operation">
-        <el-button class="mr5" type="primary" @click="pulish">发表</el-button>
+        <el-button class="mr5" type="primary" @click="submit">{{ action }}</el-button>
       </div>
     </header>
     <main class="topic-edit-main">
@@ -28,6 +28,7 @@ import Vue from 'vue'
 import { mapState } from 'vuex'
 import { Button, Notification } from 'element-ui'
 import { copyProps, isOk } from '@/utils'
+import { baseUrl } from '@/config'
 import TopicEditor from '../editor/topic_editor'
 
 Vue.use(Button)
@@ -39,27 +40,26 @@ export default {
     TopicEditor,
   },
 
-  props: {
-    topic: {
-      default() {
-        return {
-          title: '',
-          content: '',
-        }
-      }
-    },
-  },
-
   data() {
     return {
-      data: [],
+      topic: {
+        title: '',
+        content: '',
+      },
+      mode: null,
+      data: {},
       imgs: {},
     }
   },
 
   computed: {
+    action() {
+      return this.mode === 'pulish' ? '发表' : '修改'
+    },
+
     ...mapState([
       'currentUser',
+      'token',
     ]),
   },
 
@@ -73,7 +73,14 @@ export default {
           return []
         }
         let parts = []
+        let imgReg = /<img src="(.*)">/
         for (let piece of c.split('\n')) {
+          // 处理含有 img 标签的文本
+          let match = imgReg.exec(piece)
+          if (match) {
+            piece = piece.replace(match[0], `<img src="${baseUrl + match[1]}">`)
+          }
+
           parts.push({
             type: 'text',
             data: piece,
@@ -87,7 +94,7 @@ export default {
       ])
     },
 
-    pulish() {
+    submit() {
       console.log('pulish:', this.copy(this.data), this.copy(this.imgs), Object.keys(this.imgs))
       let form = new FormData()
       form.append('data', JSON.stringify(this.data))
@@ -98,15 +105,19 @@ export default {
         form.append(name, file)
       }
 
-      this.$http.post(this.$apiRoutes.addTopic, form).then((res) => {
+      let url = this.mode === 'pulish'
+        ? this.$apiRoutes.addTopic
+        : `${this.$apiRoutes.updateTopic}/${this.topic.id}?token=${this.token || ''}`
+
+      this.$http.post(url, form).then((res) => {
         if (isOk(res.status)) {
           Notification({
-            title: '发表成功',
+            title: `${this.action}成功`,
             type: 'success',
           })
         } else {
           Notification({
-            title: '发表失败',
+            title: `${this.action}失败`,
             type: 'error',
           })
         }
@@ -117,10 +128,30 @@ export default {
         })
       })
     },
+
+    getData() {
+      let { mode, topicId } = this.$route.query
+      this.mode = mode || 'pulish'
+      if (topicId) {
+        let url = `${this.$apiRoutes.getSingleTopic}/${topicId}`
+        this.$http.get(url).then((res) => {
+          if (isOk(res.status)) {
+            this.topic = copyProps(res.data, [
+              'id',
+              'content',
+              'title',
+            ])
+            this.processTopic()
+          }
+        })
+      } else {
+        this.processTopic()
+      }
+    },
   },
 
   created() {
-    this.processTopic()
+    this.getData()
   },
 }
 </script>

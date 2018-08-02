@@ -1,11 +1,13 @@
 <template>
   <div class="topic-index flex">
     <div class="topics">
-      <topic-intro-card
-        v-for="(t, index) in topics"
-        :key="index"
-        :topic="t"
-      />
+      <transition-group name="fade-slide-u" mode="out-in">
+        <topic-intro-card
+          v-for="(t, index) in topics"
+          :key="index"
+          :topic="t"
+        />
+      </transition-group>
     </div>
     <div class="aside gutter--8px">
       <el-card class="user-card" :body-style="{ padding: '0' }">
@@ -63,7 +65,7 @@ export default {
       this.$http.get(this.$apiRoutes.getTopics).then((res) => {
         let data = res.data.map((item) => {
           // 提取话题数据，通过复制处理
-          return copyProps(item, [
+          let t = copyProps(item, [
             'id',
             'content',
             'title',
@@ -72,6 +74,8 @@ export default {
             { from: 'created_time', to: 'createdTime', handler: normalizeTimestamp },
             { from: 'updated_time', to: 'updatedTime', handler: normalizeTimestamp },
           ])
+          t.shown = false
+          return t
         })
 
         this.topics = data

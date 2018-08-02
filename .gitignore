@@ -2,6 +2,7 @@
 package-lock.json
 .editorconfig
 
+/images
 *.pyc
 config.py
 log.gua.txt

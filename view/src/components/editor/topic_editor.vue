@@ -7,6 +7,7 @@
 
     <content-editor
       ref="contentInput"
+      v-if="showContent"
       v-model="formData.content"
       :imgs="imgs"
     />
@@ -33,8 +34,11 @@ export default {
     imgs: {},
   },
 
-  data() {
-    return {
+  computed: {
+    showContent() {
+      let r = this.formData.content === undefined
+      console.log('showContent', r, this.formData)
+      return !r
     }
   },
 

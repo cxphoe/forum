@@ -34,10 +34,10 @@ def current_user():
         token = bytes(str(token), encoding='utf-8')
         resp.set_cookie('_xsrf', token, httponly=True)
         resp.headers['token'] = token
+        return resp
     else:
-        data = None
-        resp = make_response(None, 200)
-    return resp
+        g = User.guest()
+        return jsonify(g)
 
 
 @main.route('/login', methods=['POST'])

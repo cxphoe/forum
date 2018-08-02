@@ -11,6 +11,10 @@ const routes = {
   getSingleTopic: '/topic',
   addTopic: '/topic/add',
   deleteTopic: '/topic/delete',
+  updateTopic: '/topic/update',
+  getReplys: '/reply/',
+  addReply: '/reply/add',
+  getMessages: '/message/',
 }
 
 export default routes

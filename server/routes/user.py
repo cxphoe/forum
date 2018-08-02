@@ -13,7 +13,7 @@ from routes import processImg
 from models.user import User
 from utils import log
 
-main = Blueprint('user', __name__)
+main = Blueprint('server_user', __name__)
 
 @main.route('/<int:id>')
 def user(id):

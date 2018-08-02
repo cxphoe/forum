@@ -30,7 +30,7 @@
       </ul>
 
       <!-- 没有用户数据时，展示登陆/注册按钮 -->
-      <ul v-if="currentUser === null">
+      <ul v-show="isGuest">
         <li>
           <el-button type="primary" class="pa0">
             <router-link
@@ -50,7 +50,7 @@
       </ul>
 
       <!-- 有用户数据，展示提醒/私信/用户相关按钮 -->
-      <ul v-else class="icons">
+      <ul v-show="!isGuest" class="icons">
         <li>
           <div v-popover:note class="link gray6 f4">
             <i class="fas fa-bell"></i>
@@ -86,9 +86,17 @@
       width="360"
     >
       <div class="popover-content text">
-        <div>message</div>
-        <div>message</div>
-        <div>message</div>
+        <template v-if="messages.length > 0">
+          <div
+            v-for="m in messages"
+            :key="m.id"
+            class="flex items-center"
+          >
+            <img class="avatar mr3" :src="m.avatar">
+            <span>{{ m.title }}</span>
+          </div>
+        </template>
+        <div v-else class="note">没有信息</div>
       </div>
     </el-popover>
     <el-popover
@@ -119,7 +127,9 @@ export default {
   name: 'Nav',
 
   computed: mapState([
-    'currentUser'
+    'currentUser',
+    'isGuest',
+    'messages',
   ]),
 
   methods: {
@@ -144,7 +154,8 @@ export default {
             title: res.data,
             type: 'success',
           })
-          this.$store.commit('setCurrentUser', { user: null })
+          this.$store.commit('clearCurrentUser')
+          this.$store.dispatch('getCurrentUser')
         }
       })
     },
@@ -207,6 +218,21 @@ export default {
 }
 
 .popover-content {
+  position: relative;
+
+  .avatar {
+    border-radius: 4px;
+  }
+
+  .note {
+    color: $color-gray5;
+    font-size: 1.5rem;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
   &.text {
     height: 400px;
     overflow-y: scroll;
@@ -214,9 +240,6 @@ export default {
     & > * {
       margin: 0 1rem;
       padding: 1rem 0;
-      & + * {
-        border-top: 1px solid #ddd;
-      }
     }
   }
 

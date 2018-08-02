@@ -1,6 +1,5 @@
-import time
-
 from sqlalchemy import String, Integer, Column, Text, UnicodeText, Unicode, ForeignKey
+from sqlalchemy.orm import relationship
 
 from models import SQLMixin, db
 
@@ -11,6 +10,8 @@ class Topic(SQLMixin, db.Model):
     title = Column(Unicode(50), nullable=False)
     content = Column(UnicodeText, nullable=False)
     user_id = Column(Integer, ForeignKey('User.id'), nullable=False)
+    # 与回复关联
+    replys = relationship('Reply')
 
     @classmethod
     def new(cls, form, user_id):

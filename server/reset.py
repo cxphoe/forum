@@ -23,20 +23,24 @@ def generate_fake_data():
     with open('markdown_demo.md', encoding='utf-8') as f:
         content = f.read()
 
+    guest_form = dict(
+        username='游客',
+        password=''
+    )
     u_form = dict(
         username="phoe",
         password="1be6af03717a0906a774a129ac467fcea8f89849df003548a8039cffffb12baf"
     )
 
+    g = User.new(guest_form)
     u = User.new(u_form)
-    u.id = 1
 
     topic_form = dict(
         title='markdown demo',
         content=content,
     )
 
-    Topic.new(topic_form)
+    Topic.new(topic_form, 2)
 
 
 if __name__ == '__main__':
