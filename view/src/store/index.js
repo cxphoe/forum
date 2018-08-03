@@ -50,6 +50,8 @@ export default new Vuex.Store({
             'avatar',
             'username',
             'is_guest',
+            'follower_count',
+            { from: 'followed_ids', to: 'followedIds' },
             { from: 'topic_count', to: 'topicCount' },
             { from: 'involved_count', to: 'involvedCount' },
           ])

@@ -21,6 +21,8 @@ from routes.topic import main as topic_routes
 from routes.user import main as user_routes
 from routes.reply import main as reply_routes
 from routes.message import main as message_routes
+from routes.board import main as board_routes
+from routes.follow import main as follow_routes
 
 import config
 
@@ -45,6 +47,8 @@ def configured_app():
     app.register_blueprint(user_routes, url_prefix='/user')
     app.register_blueprint(reply_routes, url_prefix='/reply')
     app.register_blueprint(message_routes, url_prefix='/message')
+    app.register_blueprint(board_routes, url_prefix='/board')
+    app.register_blueprint(follow_routes, url_prefix='/follow')
 
     admin = Admin(app, name='phoe', template_mode='bootstrap3')
     admin.add_view(ModelView(User, db.session))

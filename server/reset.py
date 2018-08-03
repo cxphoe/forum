@@ -5,6 +5,7 @@ from app import configured_app
 from models import db
 from models.topic import Topic
 from models.user import User
+from models.board import Board
 
 
 def reset_database():
@@ -32,15 +33,24 @@ def generate_fake_data():
         password="1be6af03717a0906a774a129ac467fcea8f89849df003548a8039cffffb12baf"
     )
 
-    g = User.new(guest_form)
-    u = User.new(u_form)
+    User.new(guest_form)
+    User.new(u_form)
+
+    b = Board.new({
+        'name': '全部',
+    })
+
+    for n in ['编程', '艺术']:
+        Board.new({
+            'name': n,
+        })
 
     topic_form = dict(
         title='markdown demo',
         content=content,
     )
 
-    Topic.new(topic_form, 2)
+    Topic.new(topic_form, 2, b.id)
 
 
 if __name__ == '__main__':

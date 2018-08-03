@@ -9,8 +9,9 @@ from flask import (
     request,
 )
 
-from routes import processImg
+from routes import processImg, get_user_data
 from models.user import User
+from models.follow import Follow
 from utils import log
 
 main = Blueprint('server_user', __name__)
@@ -36,13 +37,18 @@ def user_detail(id):
         abort(404)
     else:
         topics = [t.json() for t in u.topics]
+        follower_f = Follow.all(user_id=u.id)
+        followed_f = Follow.all(follower_id=u.id)
+
         for t in topics:
             t['pulished'] = True
         data = {
             'id': u.id,
             'avatar': u.avatar,
             'username': u.username,
-            'topics': topics
+            'topics': topics,
+            'followers': [get_user_data(f.follower_id) for f in follower_f],
+            'followed': [get_user_data(f.user_id) for f in followed_f],
         }
         return jsonify(data)
 

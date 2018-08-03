@@ -17,6 +17,7 @@ from routes import (
 )
 from models.topic import Topic
 from models.reply import Reply
+from models.board import Board
 from utils import log
 
 main = Blueprint('server_topic', __name__)
@@ -28,9 +29,13 @@ def index():
     for j in jsons:
         tid = j['id']
         rs = Reply.all(topic_id=tid)
+        # 回复的数量
         j['reply_count'] = len(rs)
+        # 话题发布用户的信息
         j['user'] = get_user_data(j['user_id'])
-    log('topics:', jsons)
+        # 话题所属的板块
+        b = Board.one(id=j['board_id'])
+        j['board_name'] = b.name
     return jsonify(jsons)
 
 
@@ -39,6 +44,8 @@ def detail(id):
     t = Topic.get(id)
     json = t.json()
     json['user'] = get_user_data(t.user_id)
+    b = Board.one(id=json['board_id'])
+    json['board_name'] = b.name
     return jsonify(json)
 
 
@@ -70,8 +77,9 @@ def add():
     process_content_data(data, files)
 
     uid = form['user_id']
+    bid = form['board_id']
 
-    t = Topic.new(data, uid)
+    t = Topic.new(data, uid, bid)
     t.save()
 
     return ''

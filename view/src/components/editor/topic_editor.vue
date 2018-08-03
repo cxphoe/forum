@@ -2,7 +2,15 @@
   <div class="topic-editor">
     <input v-model="formData.title" class="title-input" type="text" placeholder="请输入标题"/>
     <div class="pt2">
-      <!-- <el-select placeholder="请选择分类"/> -->
+      分类:&nbsp;
+      <el-select v-model="formData.board_id" placeholder="请选择分类">
+        <el-option
+          v-for="b in boards"
+          :key="b.id"
+          :label="b.name"
+          :value="b.id"
+        />
+      </el-select>
     </div>
 
     <content-editor
@@ -11,15 +19,15 @@
       v-model="formData.content"
       :imgs="imgs"
     />
-    <button @click="show">show</button>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import { Select } from 'element-ui'
+import { Option, Select } from 'element-ui'
 import ContentEditor from './content_editor'
 
+Vue.use(Option)
 Vue.use(Select)
 
 export default {
@@ -32,17 +40,12 @@ export default {
   props: {
     formData: {},
     imgs: {},
+    boards: {},
   },
 
   computed: {
     showContent() {
       return this.formData.content !== undefined
-    },
-  },
-
-  methods: {
-    show() {
-      console.log(this.formData, this.$refs.contentInput)
     },
   },
 }

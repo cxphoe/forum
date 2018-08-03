@@ -11,6 +11,7 @@ from flask import (
 import uuid
 
 from models.user import User
+from models.follow import Follow
 from utils import log
 
 main = Blueprint('index', __name__)
@@ -26,12 +27,17 @@ def current_user():
     if u is not None:
         ts = u.topics
         involved_ts_count = u.involved_ts_count()
+        fs = Follow.all(user_id=u.id)
+        followeds = Follow.all(follower_id=u.id)
+        log(followeds)
         data = {
             'id': u.id,
             'avatar': u.avatar,
             'username': u.username,
             'topic_count': len(ts),
             'involved_count': involved_ts_count,
+            'follower_count': len(fs),
+            'followed_ids': [f.user_id for f in followeds],
         }
         resp = make_response(jsonify(data), 200)
 

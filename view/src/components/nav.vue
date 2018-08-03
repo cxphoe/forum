@@ -12,12 +12,12 @@
             :to="{ name: 'topicIndex' }"
             class="link pv2 ph3 gray6 hover-blue"
           >首页</router-link>
-        <li>
+        <!-- <li>
           <router-link
             :to="{ name: 'topicIndex' }"
             class="link pv2 ph3 gray6 hover-blue"
           >分类</router-link>
-        </li>
+        </li> -->
         <li class="">
           <el-button type="primary" class="pa0">
             <router-link

@@ -25,12 +25,22 @@
           </el-col>
           <el-col :span="8" class="flex flex-column tc">
             <span class="user-info-header">关注者</span>
-            <span class="user-info-body">0</span>
+            <span class="user-info-body">{{ currentUser.follower_count }}</span>
           </el-col>
         </el-row>
       </el-card>
       <el-card class="">
         <div slot="header">话题分类</div>
+        <div
+          v-for="b in boards"
+          :key="b.id"
+          class="board"
+        >
+          <div class="flex justify-sb">
+            <span class="name">{{ b.name }}</span>
+            <span class="count">{{ b.topic_count }}</span>
+          </div>
+        </div>
       </el-card>
     </div>
   </div>
@@ -41,7 +51,7 @@ import Vue from 'vue'
 import { mapState } from 'vuex'
 import { Card, Row, Col } from 'element-ui'
 import TopicIntroCard from '@/components/card/topic/intro'
-import { copyProps, normalizeTimestamp, addBaseUrl, log } from '../../utils'
+import { copyProps, normalizeTimestamp, addBaseUrl, log, isOk } from '../../utils'
 import { baseUrl } from '@/config'
 
 Vue.use(Card)
@@ -58,6 +68,7 @@ export default {
   data() {
     return {
       topics: [],
+      boards: [],
     }
   },
 
@@ -66,6 +77,15 @@ export default {
   ]),
 
   methods: {
+    getBoards() {
+      let url = this.$apiRoutes.getBoards
+      this.$http.get(url).then((res) => {
+        if (isOk(res.status)) {
+          this.boards = res.data
+        }
+      })
+    },
+
     getData() {
       this.$http.get(this.$apiRoutes.getTopics).then((res) => {
         let data = res.data.map((item) => {
@@ -75,8 +95,10 @@ export default {
             'content',
             'title',
             'views',
-            { from: 'user', to: 'user', handler: addBaseUrl(baseUrl, ['avatar']) },
+            'board_id',
+            { from: 'board_name', to: 'boardName' },
             { from: 'reply_count', to: 'replyCount' },
+            { from: 'user', to: 'user', handler: addBaseUrl(baseUrl, ['avatar']) },
             { from: 'created_time', to: 'createdTime', handler: normalizeTimestamp },
             { from: 'updated_time', to: 'updatedTime', handler: normalizeTimestamp },
           ])
@@ -90,6 +112,7 @@ export default {
   },
 
   mounted() {
+    this.getBoards()
     this.getData()
   },
 }
@@ -97,6 +120,23 @@ export default {
 
 <style lang="scss">
 .topic-index {
+  .board {
+    color: $color-first;
+    font-size: .9rem;
+
+    & + .board {
+      margin-top: 1rem;
+    }
+
+    .count {
+      display: block;
+      background-color: $color-gray1;
+      text-align: center;
+      width: 1.5rem;
+      height: 1.5rem;
+      line-height: 1.5rem;
+    }
+  }
 }
 
 .aside {

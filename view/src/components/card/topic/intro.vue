@@ -21,7 +21,7 @@
         </div>
       </div>
       <div class="flex items-center">
-        <div class="topic-board-tag">编程</div>
+        <div class="topic-board-tag">{{ topic.boardName }}</div>
         <topic-operation
           v-if="topic.user.id === currentUser.id"
           :topic-id="topic.id"

@@ -16,13 +16,13 @@
         </div>
         <div class="lh-solid mb1 gray6 f3 flex items-center">
           <div class="mr3">编辑于 {{ topic.updatedTime | dateFormat }}</div>
-          <topic-operation v-if="currentUser.id === topic.id" :topic-id="topic.id" />
+          <topic-operation v-if="currentUser.id === topic.user.id" :topic-id="topic.id" />
         </div>
       </div>
       <div class="topic-detail-body">
         <div class="topic-content markdown-body" v-html="formattedContent"></div>
         <div class="flex mt2">
-          <div class="topic-board-tag ml-auto">编程</div>
+          <div class="topic-board-tag ml-auto">{{ topic.boardName }}</div>
         </div>
       </div>
       <div ref="footer" class="topic-detail-footer">
@@ -115,6 +115,8 @@ export default {
           'content',
           'title',
           'views',
+          'board_id',
+          { from: 'board_name', to: 'boardName' },
           { from: 'user', to: 'user', handler: addBaseUrl(baseUrl, ['avatar']) },
           { from: 'created_time', to: 'createdTime', handler: normalizeTimestamp },
           { from: 'updated_time', to: 'updatedTime', handler: normalizeTimestamp },

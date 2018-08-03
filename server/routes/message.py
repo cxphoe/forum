@@ -39,7 +39,7 @@ def add():
     pass
 
 
-@main.route('/delete')
+@main.route('/delete/<int:id>')
 @same_user_required(Message)
 def delete(id):
     Message.delete(id)

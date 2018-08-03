@@ -16,6 +16,12 @@ const routes = {
   addReply: '/reply/add',
   deleteReply: '/reply/delete',
   getMessages: '/message/',
+  getBoards: '/board/',
+  getBoardTopics: '/board/topics',
+  addFollow: '/follow/add',
+  deleteFollow: '/follow/delete',
+  getFollowers: '/follow/followers',
+  getFollowedUsers: '/follow/followed_users',
 }
 
 export default routes

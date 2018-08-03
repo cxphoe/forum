@@ -10,12 +10,14 @@ class Topic(SQLMixin, db.Model):
     title = Column(Unicode(50), nullable=False)
     content = Column(UnicodeText, nullable=False)
     user_id = Column(Integer, ForeignKey('User.id'), nullable=False)
+    board_id = Column(Integer, ForeignKey('Board.id'), nullable=False)
     # 与回复关联
     replys = relationship('Reply')
 
     @classmethod
-    def new(cls, form, user_id):
+    def new(cls, form, user_id, board_id):
         form['user_id'] = user_id
+        form['board_id'] = board_id
         m = super().new(form)
         return m
 

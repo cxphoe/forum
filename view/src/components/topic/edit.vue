@@ -21,6 +21,7 @@
         class="topic-editor"
         :form-data="data"
         :imgs="imgs"
+        :boards="boards"
       ></topic-editor>
     </main>
   </div>
@@ -48,7 +49,9 @@ export default {
       topic: {
         title: '',
         content: '',
+        board_id: 1,
       },
+      boards: [],
       mode: null,
       data: {},
       imgs: {},
@@ -67,9 +70,6 @@ export default {
   },
 
   methods: {
-    copy(o) {
-      return JSON.parse(JSON.stringify(o))
-    },
     processTopic() {
       const decomposeContent = function (c) {
         if (!c) {
@@ -93,18 +93,18 @@ export default {
       }
       this.data = copyProps(this.topic, [
         'title',
+        'board_id',
         { from: 'content', to: 'content', handler: decomposeContent },
       ])
     },
 
     submit() {
-      console.log('pulish:', this.copy(this.data), this.copy(this.imgs), Object.keys(this.imgs))
       let form = new FormData()
       form.append('data', JSON.stringify(this.data))
       form.append('user_id', this.currentUser.id)
+      form.append('board_id', this.data.board_id)
       for (let key in this.imgs) {
         let { name, file } = this.imgs[key]
-        console.log(`append file <${name}>`)
         form.append(name, file)
       }
 
@@ -123,6 +123,15 @@ export default {
       })
     },
 
+    getBoards() {
+      let url = this.$apiRoutes.getBoards
+      this.$http.get(url).then((res) => {
+        if (isOk(res.status)) {
+          this.boards = res.data
+        }
+      })
+    },
+
     getData() {
       let { mode, topicId } = this.$route.query
       this.mode = mode || 'pulish'
@@ -134,6 +143,7 @@ export default {
               'id',
               'content',
               'title',
+              'board_id',
             ])
             this.processTopic()
           }
@@ -145,6 +155,7 @@ export default {
   },
 
   created() {
+    this.getBoards()
     this.getData()
   },
 }
