@@ -172,7 +172,7 @@ export default {
             if (isOk(res.status)) {
               let user = res.data
               user.avatar = baseUrl + user.avatar
-              this.$store.commit('setCurrentUser', { user })
+              this.$store.dispatch('getCurrentUser')
               this.$router.push({ name: 'topicIndex' })
             } else {
               this.failResult(res.data)

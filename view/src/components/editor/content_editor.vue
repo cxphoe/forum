@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import { getFilename } from '@/utils'
 import { baseUrl } from '@/config'
 
 const processPart = {
@@ -73,7 +72,7 @@ export default {
             ? {
               type: 'image',
               data: node.src,
-              name: getFilename(this.imgs[node.src].name),
+              name: this.imgs[node.src].name,
             }
             : {
               type: 'text',
@@ -123,7 +122,7 @@ export default {
       if (file) {
         let imgUrl = URL.createObjectURL(file)
         this.imgs[imgUrl] = {
-          name: getFilename(file.name),
+          name: file.name,
           file: file,
         }
         console.log(this.imgs)

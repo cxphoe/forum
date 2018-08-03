@@ -27,7 +27,7 @@
 <script>
 import Vue from 'vue'
 import { mapActions } from 'vuex'
-import { Button, Card, Form, FormItem, Input, Notification } from 'element-ui'
+import { Button, Card, Form, FormItem, Input, Message } from 'element-ui'
 import { buildFormdata, isOk } from '@/utils'
 import { getUser } from '@/http/requests'
 
@@ -53,10 +53,7 @@ export default {
       getUser(id, (user) => {
         this.user = user
       }, () => {
-        Notification({
-          title: '用户数据数据不存在',
-          type: 'error',
-        })
+        Message.error('用户数据数据不存在')
       })
     },
 
@@ -81,16 +78,10 @@ export default {
       let form = buildFormdata(this.uploadData)
       this.$http.post(`${this.$apiRoutes.updateUser}/${this.user.id}`, form).then((res) => {
         if (isOk(res.status)) {
-          Notification({
-            title: '修改成功',
-            type: 'success',
-          })
+          Message.success('修改成功')
           this.getCurrentUser()
         } else {
-          Notification({
-            title: '修改失败',
-            type: 'error',
-          })
+          Message.error('修改失败')
         }
       })
     },

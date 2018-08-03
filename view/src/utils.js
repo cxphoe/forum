@@ -35,6 +35,8 @@ const timeParts = function (date) {
  * 根据时间戳返回时间格式
  */
 const dateFormat = function (timestamp) {
+  timestamp = timestamp || 0
+
   const format = function (n) {
     return n.toString().padStart(2, '0')
   }
@@ -134,6 +136,20 @@ const buildFormdata = function (obj, props, form) {
   return form
 }
 
+/**
+ * 为对象的属性添加基路径
+ * @param { String } baseUrl 基路径
+ * @param { [String] } props 需要添加路径的属性
+ */
+const addBaseUrl = function (baseUrl, props) {
+  return (obj) => {
+    for (let p of props) {
+      obj[p] = baseUrl + obj[p]
+    }
+    return obj
+  }
+}
+
 export {
   log,
   isOk,
@@ -143,4 +159,5 @@ export {
   normalizeTimestamp,
   clearObj,
   buildFormdata,
+  addBaseUrl,
 }

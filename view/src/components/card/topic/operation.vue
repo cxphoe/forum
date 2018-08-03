@@ -14,23 +14,17 @@
 <script>
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { Button, Notification } from 'element-ui'
+import { Button, Message } from 'element-ui'
 import { isOk } from '@/utils'
 
 Vue.use(Button)
 
 const notifySuccess = function (msg) {
-  Notification({
-    title: msg,
-    type: 'success',
-  })
+  Message.success(msg)
 }
 
 const notifyFail = function (msg) {
-  Notification({
-    title: msg,
-    type: 'error',
-  })
+  Message.error(msg)
 }
 
 export default {

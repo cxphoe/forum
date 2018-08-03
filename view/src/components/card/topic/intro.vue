@@ -5,17 +5,17 @@
     <div slot="header" class="f2 topic-meta">
       <div class="flex items-center">
         <router-link
-          :to="{ name: 'userHomepage', params: { id: topic.userId } }"
+          :to="{ name: 'userHomepage', params: { id: topic.user.id } }"
           class="link"
         >
-          <img class="avatar mr3" :src="user.avatar">
+          <img class="avatar mr3" :src="topic.user.avatar">
         </router-link>
         <div class="flex flex-column">
           <router-link
-            :to="{ name: 'userHomepage', params: { id: topic.userId } }"
+            :to="{ name: 'userHomepage', params: { id: topic.user.id } }"
             class="link"
           >
-            <span class="f3 mb fw6">{{ user.username }}</span>
+            <span class="f3 mb fw6">{{ topic.user.username }}</span>
           </router-link>
           <span class="lh-solid mb1 gray6">{{ topic.updatedTime | dateFormat }}</span>
         </div>
@@ -23,17 +23,17 @@
       <div class="flex items-center">
         <div class="topic-board-tag">编程</div>
         <topic-operation
-          v-if="topic.userId === currentUser.id"
+          v-if="topic.user.id === currentUser.id"
           :topic-id="topic.id"
           class="ml3"
         />
       </div>
     </div>
-    <div class="topic-intro">
-      <div v-if="firstImg">
+    <div class="topic-intro" @click="showTopicDetail">
+      <div v-if="firstImg" class="img-wrapper">
         <img :src="firstImg">
       </div>
-      <div class="topic-info" @click="showTopicDetail">
+      <div class="topic-info">
         <h3 class="f4 fw6">{{ topic.title }}</h3>
         <div class="topic-content" :style="{ height: firstImg ? '6rem' : '3rem' }">{{ topic.content }}</div>
       </div>
@@ -57,7 +57,6 @@ import { mapState, mapMutations } from 'vuex'
 import { Card } from 'element-ui'
 import { dateFormat } from '@/utils'
 import { baseUrl } from '@/config'
-import { getUser } from '@/http/requests'
 import TopicOperation from './operation'
 
 Vue.use(Card)
@@ -76,7 +75,6 @@ export default {
   data() {
     return {
       firstImg: null,
-      user: {},
     }
   },
 
@@ -91,20 +89,6 @@ export default {
   },
 
   methods: {
-    getUser() {
-      let id = this.topic.userId
-      let u = this.$store.state.users[id]
-      if (u) {
-        this.user = u
-      } else {
-        this.user = {}
-        getUser(id, (user) => {
-          this.user = user
-          this.setUser({ id, user })
-        })
-      }
-    },
-
     getFirstImgSrc() {
       let reg = /^<img src="(.*)">$/m
       let match = reg.exec(this.topic.content)
@@ -126,7 +110,6 @@ export default {
   },
 
   created() {
-    this.getUser()
     this.getFirstImgSrc()
   },
 }
@@ -134,6 +117,11 @@ export default {
 
 <style lang="scss">
 .topic-intro-card {
+  .el-card__header {
+    border: none;
+    padding-bottom: 0;
+  }
+
   .topic-board-tag {
     border: 1px solid $color-first;
     border-radius: 1rem;
@@ -149,11 +137,14 @@ export default {
   }
 
   .topic-intro {
+    cursor: pointer;
     display: flex;
+    user-select: none;
 
     .topic-info {
-      cursor: pointer;
-      user-select: none;
+      h3 {
+        line-height: 1.5rem;
+      }
 
       &:hover {
         h3 {
@@ -164,11 +155,22 @@ export default {
 
     .topic-content {
       overflow: hidden;
+      flex-grow: 1;
     }
 
-    img {
+    .img-wrapper {
       border-radius: 5px;
-      width: 8rem;
+      height: 8rem;
+      overflow: hidden;
+      position: relative;
+      flex: 0 0 11rem;
+      img {
+        height: 100%;
+        left: 50%;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
     }
 
     & > * {

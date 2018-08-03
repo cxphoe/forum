@@ -11,12 +11,13 @@ from routes import (
     same_user_required,
     xsrf_token_required,
     users_from_content,
+    get_user_data,
 )
 from models.user import User
 from models.reply import Reply
 from models.topic import Topic
 from models.message import Message
-from utils import log, copy_attrs
+from utils import log
 
 main = Blueprint('server_reply', __name__)
 
@@ -30,11 +31,7 @@ def index():
     rs = t.replys
     jsons = [r.json() for r in rs]
     for r in jsons:
-        u = User.one(id=r['user_id'])
-        r['user'] = copy_attrs([
-            'username',
-            'avatar',
-        ], u)
+        r['user'] = get_user_data(r['user_id'])
     log(t, jsons)
     return jsonify(jsons)
 
@@ -71,15 +68,16 @@ def add():
             'user_id': id,
             'receiver_id': u.id,
             'reply_id': r.id,
-            'title': '你被 {} at 了'.format(u.username),
+            'title': '你被 {} at 了'.format(user.username),
         }
         Message.new(d)
 
     return jsonify(r.json())
 
 
-@main.route('/delete')
+@main.route('/delete/<int:id>')
 @same_user_required(Reply)
+@xsrf_token_required
 def delete(id):
     Reply.delete(id)
     return '删除成功'

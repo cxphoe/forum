@@ -7,16 +7,16 @@
       <div class="f2 topic-detail-header">
         <div class="flex items-center">
           <router-link
-            :to="{ name: 'userHomepage', params: { id: topic.userId } }"
+            :to="{ name: 'userHomepage', params: { id: topic.user.id || -1 } }"
             class="link"
           >
-            <img class="avatar mr3" :src="user.avatar">
-            <span class="f3 mb fw6">{{ user.username }}</span>
+            <img class="avatar mr3" :src="topic.user.avatar">
+            <span class="f3 mb fw6">{{ topic.user.username }}</span>
           </router-link>
         </div>
         <div class="lh-solid mb1 gray6 f3 flex items-center">
           <div class="mr3">编辑于 {{ topic.updatedTime | dateFormat }}</div>
-          <topic-operation :topic-id="topic.id" />
+          <topic-operation v-if="currentUser.id === topic.id" :topic-id="topic.id" />
         </div>
       </div>
       <div class="topic-detail-body">
@@ -34,23 +34,12 @@
         </div>
         <div class="replys">
           <div class="mb2">{{ replys.length }} 条回复</div>
-          <el-card
+          <reply-card
             v-for="r in replys"
             :key=r.id
-            class="reply"
-          >
-            <div class="flex items-center mb2">
-              <router-link
-                :to="{ name: 'userHomepage', params: { id: r.userId } }"
-                class="link"
-              >
-                <img class="avatar mr3" :src="r.user.avatar">
-                <span class="mr3">{{ r.user.username }}</span>
-              </router-link>
-              <div class="gray5">{{ r.createdTime | dateFormat }}</div>
-            </div>
-            <div class="">{{ r.content }}</div>
-          </el-card>
+            :reply="r"
+            @delete="getReplys"
+          ></reply-card>
         </div>
       </div>
     </el-card>
@@ -59,17 +48,19 @@
 
 <script>
 import Vue from 'vue'
+import { mapState } from 'vuex'
 import { Card } from 'element-ui'
 import ReplyEditor from '@/components/editor/reply_editor'
 import TopicOperation from './operation'
+import ReplyCard from '../reply'
 import marked from 'marked'
 import {
   isOk,
   copyProps,
   dateFormat,
   normalizeTimestamp,
+  addBaseUrl,
 } from '@/utils'
-import { getUser } from '@/http/requests'
 import { baseUrl } from '@/config'
 
 Vue.use(Card)
@@ -78,19 +69,24 @@ export default {
   name: 'TopicDetailCard',
 
   components: {
+    ReplyCard,
     ReplyEditor,
     TopicOperation,
   },
 
   data() {
     return {
-      topic: {},
-      user: {},
+      topic: {
+        user: {},
+      },
       replys: [],
     }
   },
 
   computed: {
+    /**
+     * 为数据库存储的内容字符串中的 img 加上 baseUrl
+     */
     formattedContent() {
       let c = this.topic.content || ''
       let imgReg = /<img src="(.*)">/ig
@@ -101,6 +97,10 @@ export default {
       }
       return marked(c)
     },
+
+    ...mapState([
+      'currentUser',
+    ]),
   },
 
   filters: {
@@ -110,14 +110,12 @@ export default {
   methods: {
     getData(id) {
       this.$http.get(`${this.$apiRoutes.getSingleTopic}/${id}`).then((res) => {
-        this.getUser(res.data['user_id'])
-
         this.topic = copyProps(res.data, [
           'id',
           'content',
           'title',
           'views',
-          { from: 'user_id', to: 'userId' },
+          { from: 'user', to: 'user', handler: addBaseUrl(baseUrl, ['avatar']) },
           { from: 'created_time', to: 'createdTime', handler: normalizeTimestamp },
           { from: 'updated_time', to: 'updatedTime', handler: normalizeTimestamp },
         ])
@@ -135,20 +133,12 @@ export default {
             let result = copyProps(r, [
               'id',
               'content',
-              'user',
-              { from: 'user_id', to: 'userId' },
+              { from: 'user', to: 'user', handler: addBaseUrl(baseUrl, ['avatar']) },
               { from: 'created_time', to: 'createdTime', handler: normalizeTimestamp },
             ])
-            result.user.avatar = baseUrl + result.user.avatar
             return result
           }).sort((self, other) => other.createdTime - self.createdTime)
         }
-      })
-    },
-
-    getUser(id) {
-      getUser(id, (user) => {
-        this.user = user
       })
     },
 

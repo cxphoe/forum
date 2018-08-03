@@ -13,6 +13,7 @@ from routes import (
     processImg,
     same_user_required,
     xsrf_token_required,
+    get_user_data,
 )
 from models.topic import Topic
 from models.reply import Reply
@@ -28,6 +29,7 @@ def index():
         tid = j['id']
         rs = Reply.all(topic_id=tid)
         j['reply_count'] = len(rs)
+        j['user'] = get_user_data(j['user_id'])
     log('topics:', jsons)
     return jsonify(jsons)
 
@@ -35,7 +37,9 @@ def index():
 @main.route('/<int:id>')
 def detail(id):
     t = Topic.get(id)
-    return jsonify(t.json())
+    json = t.json()
+    json['user'] = get_user_data(t.user_id)
+    return jsonify(json)
 
 
 def process_content_data(data, files):

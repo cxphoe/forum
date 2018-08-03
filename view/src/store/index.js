@@ -4,7 +4,6 @@ import http from '@/http'
 import routes from '@/http/routes'
 import { isOk } from '@/utils'
 import { baseUrl } from '@/config'
-import { getUser } from '@/http/requests'
 import { copyProps } from '../utils'
 
 Vue.use(Vuex)
@@ -14,14 +13,12 @@ export default new Vuex.Store({
     currentUser: {},
     messages: [],
     isGuest: true,
-    users: [],
     token: null,
   },
 
   mutations: {
     setCurrentUser(state, payload) {
       let { user } = payload
-      console.log(user)
       state.currentUser = user
       state.isGuest = !!user.is_guest
     },
@@ -34,17 +31,8 @@ export default new Vuex.Store({
       state.messages = messages
     },
 
-    setUser(state, payload) {
-      let { id, user } = payload
-      state.users[id] = user
-    },
-
     setGuest(state, { user }) {
       state.guest = user
-    },
-
-    clearUsers(state) {
-      state.users = []
     },
 
     setToken(state, { token }) {
@@ -88,13 +76,6 @@ export default new Vuex.Store({
           })
           commit('setMessages', { messages: ms })
         }
-      })
-    },
-
-    getUser({ commit }, payload) {
-      let { id } = payload
-      getUser(id, (user) => {
-        commit('setUser', { id, user })
       })
     },
   },

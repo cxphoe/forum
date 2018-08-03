@@ -36,10 +36,8 @@ export default {
 
   computed: {
     showContent() {
-      let r = this.formData.content === undefined
-      console.log('showContent', r, this.formData)
-      return !r
-    }
+      return this.formData.content !== undefined
+    },
   },
 
   methods: {

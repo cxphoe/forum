@@ -38,10 +38,11 @@
 
 <script>
 import Vue from 'vue'
-import { mapState, mapMutations } from 'vuex'
+import { mapState } from 'vuex'
 import { Card, Row, Col } from 'element-ui'
 import TopicIntroCard from '@/components/card/topic/intro'
-import { copyProps, normalizeTimestamp } from '../../utils'
+import { copyProps, normalizeTimestamp, addBaseUrl, log } from '../../utils'
+import { baseUrl } from '@/config'
 
 Vue.use(Card)
 Vue.use(Row)
@@ -74,26 +75,21 @@ export default {
             'content',
             'title',
             'views',
+            { from: 'user', to: 'user', handler: addBaseUrl(baseUrl, ['avatar']) },
             { from: 'reply_count', to: 'replyCount' },
-            { from: 'user_id', to: 'userId' },
             { from: 'created_time', to: 'createdTime', handler: normalizeTimestamp },
             { from: 'updated_time', to: 'updatedTime', handler: normalizeTimestamp },
           ])
           return t
         })
+        log('topics:', data)
 
         this.topics = data
       })
     },
-
-    ...mapMutations([
-      'clearUsers',
-    ]),
   },
 
   mounted() {
-    // 每次刷新页面时把缓存的用户数据清除
-    this.clearUsers()
     this.getData()
   },
 }
@@ -101,9 +97,6 @@ export default {
 
 <style lang="scss">
 .topic-index {
-  .topics {
-    flex-grow: 1;
-  }
 }
 
 .aside {

@@ -18,7 +18,7 @@
 <script>
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { Button, Input, Notification } from 'element-ui'
+import { Button, Input, Message } from 'element-ui'
 import { isOk } from '@/utils'
 
 Vue.use(Button)
@@ -62,16 +62,10 @@ export default {
         params: { token: this.token }
       }).then((res) => {
         if (isOk(res.status)) {
-          Notification({
-            title: '回复成功',
-            type: 'success',
-          })
+          Message.success('回复成功')
           this.$emit('post')
         } else {
-          Notification({
-            title: '回复失败',
-            type: 'error',
-          })
+          Message.error('回复失败')
         }
       })
     },

@@ -8,7 +8,7 @@ import os, uuid
 
 from functools import wraps
 from models.user import User
-from utils import log
+from utils import log, copy_attrs
 
 def interceptor(route_fn, response_maked):
     '''
@@ -71,8 +71,10 @@ def same_user_required(model):
             log(args, kwargs)
             model_id = kwargs['id']
             uid = session.get('user_id', -1)
+            
             u = User.one(id=uid)
             m = model.one(id=model_id)
+            log('id', u, m)
             if u is None or m.user_id != uid:
                 # 没有权限，返回 401
                 abort(401)
@@ -123,3 +125,11 @@ def users_from_content(content):
                 users.append(u)
     log('users:', users)
     return users
+
+
+def get_user_data(id, attrs=['id', 'username', 'avatar']):
+    u = User.one(id=id)
+    if u is None:
+        u = User.guest()
+    d = copy_attrs(attrs, u)
+    return d

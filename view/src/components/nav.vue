@@ -118,7 +118,7 @@
 <script>
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { Button, Popover, Notification } from 'element-ui'
+import { Button, Popover, Message } from 'element-ui'
 import { isOk } from '@/utils'
 
 Vue.use(Button)
@@ -158,10 +158,7 @@ export default {
     logout() {
       this.$http.get(this.$apiRoutes.logout).then((res) => {
         if (isOk(res.status)) {
-          Notification({
-            title: res.data,
-            type: 'success',
-          })
+          Message.success(res.data)
           // this.$store.commit('clearCurrentUser')
           this.$store.dispatch('getCurrentUser')
         }

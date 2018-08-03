@@ -14,6 +14,7 @@ const routes = {
   updateTopic: '/topic/update',
   getReplys: '/reply/',
   addReply: '/reply/add',
+  deleteReply: '/reply/delete',
   getMessages: '/message/',
 }
 

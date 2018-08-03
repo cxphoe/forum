@@ -1,9 +1,12 @@
 <template>
   <div class="topic-edit-wrapper">
     <header class="topic-edit-header">
-      <div class="logo">
+      <router-link
+        class="logo"
+        :to="{ name: 'topicIndex' }"
+      >
         <img src="/static/img/logo.png">
-      </div>
+      </router-link>
       <div class="status-wrapper">
         <div class="status">
           <span>发表话题</span>
@@ -26,7 +29,7 @@
 <script>
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { Button, Notification } from 'element-ui'
+import { Button, Message } from 'element-ui'
 import { copyProps, isOk } from '@/utils'
 import { baseUrl } from '@/config'
 import TopicEditor from '../editor/topic_editor'
@@ -111,21 +114,12 @@ export default {
 
       this.$http.post(url, form).then((res) => {
         if (isOk(res.status)) {
-          Notification({
-            title: `${this.action}成功`,
-            type: 'success',
-          })
+          Message.success(`${this.action}成功`)
         } else {
-          Notification({
-            title: `${this.action}失败`,
-            type: 'error',
-          })
+          Message.error(`${this.action}失败`)
         }
       }).catch(() => {
-        Notification({
-          title: '服务器出错',
-          type: 'error',
-        })
+        Message.error('服务器出错')
       })
     },
 

@@ -11,10 +11,11 @@ from routes import (
     same_user_required,
     login_required,
     xsrf_token_required,
+    get_user_data,
 )
 from models.user import User
 from models.message import Message
-from utils import log, copy_attrs
+from utils import log
 
 main = Blueprint('server_message', __name__)
 
