@@ -32,7 +32,6 @@ def index():
     jsons = [r.json() for r in rs]
     for r in jsons:
         r['user'] = get_user_data(r['user_id'])
-    log(t, jsons)
     return jsonify(jsons)
 
 

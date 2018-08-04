@@ -21,12 +21,8 @@ class User(SQLMixin, db.Model):
 
     @classmethod
     def guest(cls):
-        guest = {
-            'username': '游客',
-            'avatar': 'images/user_default.png',
-            'is_guest': True,
-        }
-        return guest
+        g = cls.one(id=1)
+        return g
 
     @classmethod
     def salted_password(cls, password, salt='$!@><?>HUI&DWQa`'):

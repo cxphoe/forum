@@ -23,7 +23,6 @@
             <router-link
               :to="{ name: 'topicEdit' }"
               class="block pv2 ph3 link white hover-white"
-              target="_blank"
             >发表话题</router-link>
           </el-button>
         </li>

@@ -61,7 +61,9 @@ export default new Vuex.Store({
           t && commit('setToken', { token: t })
 
           // 得到 token 之后，再获取 私信/信息
-          dispatch('getMessages', { token: t })
+          if (!user.is_guest) {
+            dispatch('getMessages', { token: t })
+          }
           commit('setCurrentUser', { user })
         }
       })

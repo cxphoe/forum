@@ -10,6 +10,8 @@ from flask import (
 )
 import uuid
 
+from routes import get_user_data
+
 from models.user import User
 from models.follow import Follow
 from utils import log
@@ -22,14 +24,12 @@ def current_user():
     # 然后用 id 找用户
     # 找不到就返回 None
     uid = session.get('user_id', -1)
-    log('session', session, uid, session.new)
     u = User.one(id=uid)
     if u is not None:
         ts = u.topics
         involved_ts_count = u.involved_ts_count()
         fs = Follow.all(user_id=u.id)
         followeds = Follow.all(follower_id=u.id)
-        log(followeds)
         data = {
             'id': u.id,
             'avatar': u.avatar,
@@ -39,17 +39,22 @@ def current_user():
             'follower_count': len(fs),
             'followed_ids': [f.user_id for f in followeds],
         }
-        resp = make_response(jsonify(data), 200)
-
-        # 设置 xsrf token
-        token = uuid.uuid4()
-        token = bytes(str(token), encoding='utf-8')
-        resp.set_cookie('_xsrf', token, httponly=True)
-        resp.headers['token'] = token
-        return resp
     else:
         g = User.guest()
-        return jsonify(g)
+        data = {
+            'id': g.id,
+            'avatar': g.avatar,
+            'username': g.username,
+            'is_guest': True,
+        }
+    resp = make_response(jsonify(data), 200)
+
+    # 设置 xsrf token
+    token = uuid.uuid4()
+    token = bytes(str(token), encoding='utf-8')
+    resp.set_cookie('_xsrf', token, httponly=True)
+    resp.headers['token'] = token
+    return resp
 
 
 @main.route('/login', methods=['POST'])
