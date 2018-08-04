@@ -2,14 +2,20 @@
   <div id="app">
     <router-view name="nav"/>
     <router-view class="app-main"/>
+    <Footer/>
   </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
+import Footer from '@/components/footer'
 
 export default {
   name: 'App',
+
+  components: {
+    Footer,
+  },
 
   methods: mapActions([
     'getCurrentUser'
