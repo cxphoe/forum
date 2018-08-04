@@ -3,8 +3,8 @@
  * @param {*} args log 参数，直接传给 console.log
  */
 const log = function (...args) {
-  let now = new Date()
-  console.log(now.toLocaleString(), ...args)
+  // let now = new Date()
+  // console.log(now.toLocaleString(), ...args)
 }
 
 /**

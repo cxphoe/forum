@@ -25,8 +25,8 @@
           <div class="topic-board-tag ml-auto">{{ topic.boardName }}</div>
         </div>
       </div>
-      <div ref="footer" class="topic-detail-footer">
-        <div ref="re-wrapper" class="re-wrapper">
+      <div id="detail-footer" class="topic-detail-footer">
+        <div ref="re-wrapper" id="re-wrapper">
           <reply-editor
             v-if="topic.id" ref="replyEditor"
             :topic-id="topic.id" @post="getReplys"
@@ -143,26 +143,37 @@ export default {
         }
       })
     },
-
-    handleScroll() {
-      let f = this.$refs.footer
-      let re = this.$refs['re-wrapper']
-      console.log(f.offsetTop, window.scrollY + window.innerHeight)
-      if (f.offsetTop <= window.scrollY + window.innerHeight) {
-        re.classList.remove('fix')
-      } else {
-        re.classList.add('fix')
-      }
-    },
   },
 
   created() {
     let id = this.$route.params.id
     this.getData(id)
     this.getReplys(id)
-    window.addEventListener('scroll', () => {
-      this.handleScroll()
-    })
+  },
+
+  // 以下两个路由进/入，函数用于控制回复编辑器的类
+  beforeRouteEnter(to, from, next) {
+    // to 指的是 detail 组件
+    to.meta.scrollFn = to.meta.scrollFn || function () {
+      let w = document.querySelector('#re-wrapper')
+      let f = document.querySelector('#detail-footer')
+      if (w && f) {
+        if (f.offsetTop <= window.scrollY + window.innerHeight) {
+          w.classList.remove('fix')
+        } else {
+          w.classList.add('fix')
+        }
+      }
+    }
+    window.addEventListener('scroll', to.meta.scrollFn)
+
+    next()
+  },
+
+  beforeRouteLeave(to, from, next) {
+    // from 指的是 detial 这个组件
+    window.removeEventListener('scroll', from.meta.scrollFn)
+    next()
   },
 }
 </script>
@@ -198,7 +209,7 @@ export default {
       margin-top: 1.5rem;
     }
 
-    .re-wrapper {
+    #re-wrapper {
       width: 100%;;
 
       &.fix {
