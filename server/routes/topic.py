@@ -49,9 +49,15 @@ def detail(id):
     return jsonify(json)
 
 
+def safe_text(text):
+    text = text.replace('<', '&lt;')
+    text = text.replace('>', '&gt;')
+    return text
+
+
 def process_content_data(data, files):
     get_content = {
-        'text': lambda item: item['data'],
+        'text': lambda item: safe_text(item['data']),
         'image': lambda item: '<img src="{}">'.format(processImg(files[item['name']])),
     }
 
