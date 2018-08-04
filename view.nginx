@@ -1,0 +1,15 @@
+server {
+    listen 80;
+    server_name 0.0.0.0;
+    
+    location / {
+        root /var/www/forum/view;
+        try_files $uri $uri/ /;
+        index index.html;
+    }
+
+    location /api {
+        rewrite ^/api/(.*)$ /$1 break;
+        proxy_pass http://localhost:2000;
+    }
+}

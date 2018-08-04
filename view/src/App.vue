@@ -30,7 +30,7 @@ export default {
 
 <style lang="scss">
 html, body {
-  background-color: #e9eaeb;
+  background-color: $color-gray1 !important;
   height: 100%;
 }
 
