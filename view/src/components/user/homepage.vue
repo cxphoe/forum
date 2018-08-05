@@ -4,18 +4,20 @@
       <div class="user-meta">
         <img class="avatar" :src="user.avatar">
         <div>{{ user.username }}</div>
-        <el-button
-          v-if="!isGuest && !isFollowed && currentUser.id !== user.id"
-          type="primary"
-          size="small"
-          @click="follow"
-        >关注</el-button>
-        <el-button
-          v-else-if="!isGuest"
-          type="danger"
-          size="small"
-          @click="unfollow"
-        >取消关注</el-button>
+        <template v-if="!isGuest && currentUser.id !== user.id">
+          <el-button
+            v-if="!isFollowed"
+            type="primary"
+            size="small"
+            @click="follow"
+          >关注</el-button>
+          <el-button
+            v-else
+            type="danger"
+            size="small"
+            @click="unfollow"
+          >取消关注</el-button>
+        </template>
       </div>
     </el-card>
     <el-card class="shadow-2dp">
