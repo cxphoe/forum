@@ -56,9 +56,17 @@ def safe_text(text):
 
 
 def process_content_data(data, files):
+    def get_img(item):
+        name = item.get('name')
+        if name is None:
+            src = item['data']
+        else:
+            src = processImg(files[name])
+        return '<img src="{}">'.format(src)
+
     get_content = {
         'text': lambda item: safe_text(item['data']),
-        'image': lambda item: '<img src="{}">'.format(processImg(files[item['name']])),
+        'image': lambda item: get_img(item),
     }
 
     log(files, data['content'])
@@ -74,7 +82,11 @@ def add():
     request.files 接受到的是文章内容中上传的图片(图片名和文件的键值对)
     request.form['data']['content'] 接受到的数据是一个数组，成员的结构可能是：
         { 'type': 'text', 'data': 文本值 }
-        { 'type': 'img', 'name': 文件名字（用于在 request.files 中查找文件）, 'data': 图片src }
+        {
+            'type': 'img',
+            'name': 文件名字（用于在 request.files 中查找文件）,当没有 name 值时，表示是已存在服务器中的
+            'data': 图片src
+        }
     """
     files = request.files
     form = request.form

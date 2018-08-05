@@ -3,7 +3,6 @@
     <router-link
       :to="{ name: 'topicEdit', query: { topicId, mode: 'modify' } }"
       ref="toEditor"
-      target="_blank"
       hidden
     />
     <el-button size="small" type="primary" @click="editTopic">编辑</el-button>

@@ -41,7 +41,7 @@ const removeBaseUrl = function (url) {
   if (i > -1) {
     url = url.substring(i + sign.length)
   }
-  console.log('url:', url)
+  // console.log('url:', url)
   return url
 }
 
@@ -67,7 +67,7 @@ export default {
         },
         IMG: (node) => {
           // 判断这张图片是否在上传文件中，如果没有，说明是文章原有的图片
-          // 去掉链接中的 baseUrl，按文本返回
+          // 去掉链接中的 baseUrl，只返回链接
           return node.src in this.imgs
             ? {
               type: 'image',
@@ -75,8 +75,8 @@ export default {
               name: this.imgs[node.src].name,
             }
             : {
-              type: 'text',
-              data: `<img src="${removeBaseUrl(node.src)}">`,
+              type: 'image',
+              data: removeBaseUrl(node.src),
             }
         },
         BR(node) {
@@ -106,26 +106,21 @@ export default {
     },
 
     isInArea($el) {
-      console.log('check $el\n', $el)
       while ($el !== document.body && $el !== this.$refs.input) {
         $el = $el.parentNode
-        console.log($el)
       }
-      console.log('end check $el')
       return $el === this.$refs.input
     },
 
     checkImg(event) {
       let $input = event.target
       let file = $input.files[0]
-      console.log(file)
       if (file) {
         let imgUrl = URL.createObjectURL(file)
         this.imgs[imgUrl] = {
           name: file.name,
           file: file,
         }
-        console.log(this.imgs)
         let s = this.lastSelect
         if (s !== null && this.isInArea(s)) {
           if (s.nodeName !== 'DIV') {
