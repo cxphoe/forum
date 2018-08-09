@@ -1,14 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Nav from '@/components/nav'
-import TopicIndex from '@/components/topic/index'
-import TopicEdit from '@/components/topic/edit'
-import TopicDetail from '@/components/card/topic/detail'
-import Login from '@/components/login'
-import UserHomepage from '@/components/user/homepage'
-import UserSetting from '@/components/user/setting'
 
 Vue.use(Router)
+
+const Nav = () => import(/* webpackChunkName: "nav" */ '@/components/nav')
+const TopicIndex = () => import(/* webpackChunkName: "topicindex" */ '@/components/topic/index')
+const TopicEdit = () => import(/* webpackChunkName: "topicedit" */ '@/components/topic/edit')
+const TopicDetail = () => import(/* webpackChunkName: "topicdetail" */ '@/components/card/topic/detail')
+const Login = () => import(/* webpackChunkName: "login" */ '@/components/login')
+const UserHomepage = () => import(/* webpackChunkName: "userhomepage" */ '@/components/user/homepage')
+const UserSetting = () => import(/* webpackChunkName: "usersetting" */ '@/components/user/setting')
 
 const indexRoutes = [
   {

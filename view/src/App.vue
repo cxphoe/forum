@@ -21,7 +21,7 @@ export default {
     'getCurrentUser'
   ]),
 
-  created() {
+  beforeCreated() {
     // 在页面创建时请求用户数据
     this.getCurrentUser()
   },

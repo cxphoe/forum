@@ -36,7 +36,11 @@ const webpackConfig = merge(baseWebpackConfig, {
       uglifyOptions: {
         compress: {
           warnings: false
-        }
+        },
+        output: {
+          comments: false,
+        },
+        mangle: true
       },
       sourceMap: config.build.productionSourceMap,
       parallel: true
