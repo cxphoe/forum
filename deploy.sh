@@ -27,7 +27,7 @@ debconf-set-selections /var/www/forum/database_secret.conf
 
 apt-get install -y git supervisor nginx python3.6 mysql-server
 python3.6 /var/www/forum/get-pip.py
-pip3 install jinja2 flask gunicorn pymysql flask_sqlalchemy flask_admin gevent
+pip3 install jinja2 flask gunicorn pymysql flask_sqlalchemy flask_admin gevent redis
 
 # 删掉 nginx default 设置
 rm -f /etc/nginx/sites-enabled/default
