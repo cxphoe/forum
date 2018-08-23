@@ -86,6 +86,8 @@
 
 ### 前端
 
+在 `view` 路径下执行一下命令
+
 安装
 
     npm install
@@ -106,19 +108,9 @@
 
 ### 部署
 
-将前端编译之后生成的 dist 文件夹改名为 view，并与 server 一起，上传到 linux 服务器的同级目录下。
+将前端编译之后生成的 dist 文件夹改名为 view，连同除了 view （前端源码）的其他文件，上传到 linux 服务器的 `/var/www/forum` 目录下。
 
-之后，将本项目根目录下的：
-
-	.
-	├── get-pip.py
-	├── deploy.sh
-	├── database_secret.conf
-	├── server.conf
-	├── view.nginx
-	└── wsgi.py
-
-也与 view，server 放在同级目录下，执行
+之后，执行
 
     bash deploy.sh
 

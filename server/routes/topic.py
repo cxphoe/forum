@@ -77,6 +77,7 @@ def process_content_data(data, files):
 
 
 @main.route('/add', methods=['POST'])
+@xsrf_token_required
 def add():
     """ 接受到的是一个特殊的数据结构：
     request.files 接受到的是文章内容中上传的图片(图片名和文件的键值对)

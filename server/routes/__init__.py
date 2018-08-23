@@ -10,6 +10,10 @@ from functools import wraps
 from models.user import User
 from utils import log, copy_attrs
 
+import redis
+
+strict_redis = redis.StrictRedis(host='localhost', port=6379, db=0)
+
 def interceptor(route_fn, response_maked):
     '''
     拦截器，用于检查响应路由的请求和响应
@@ -53,8 +57,12 @@ def set_route(blueprint, *args, response_maked=False, **kwargs):
 
 
 def processImg(file):
+    '''
+    处理上传图片
+    '''
+    # 用户可能通过文件名字访问的服务器内部的文件，也有可能写脚本
+    # 需要对文件名字做处理
     # ../../root/.ssh/authorized_keys
-    # filename = secure_filename(file.filename)
     suffix = file.filename.split('.')[-1]
     filename = '{}.{}'.format(str(uuid.uuid4()), suffix)
     path = os.path.join('images', filename)
@@ -86,6 +94,10 @@ def same_user_required(model):
 
 
 def xsrf_token_required(route_fn):
+    '''
+    通过比较客户端的 cookies 中的 token 跟请求数据中的 token 是否一致
+    来判断是否是用户自己的操作
+    '''
 
     @wraps(route_fn)
     def fn(*args, **kwargs):

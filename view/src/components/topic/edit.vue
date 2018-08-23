@@ -110,9 +110,13 @@ export default {
 
       let url = this.mode === 'pulish'
         ? this.$apiRoutes.addTopic
-        : `${this.$apiRoutes.updateTopic}/${this.topic.id}?token=${this.token || ''}`
+        : `${this.$apiRoutes.updateTopic}/${this.topic.id}`
 
-      this.$http.post(url, form).then((res) => {
+      this.$http.post(url, form, {
+        params: {
+          token: this.token,
+        },
+      }).then((res) => {
         if (isOk(res.status)) {
           Message.success(`${this.action}成功`)
         } else {

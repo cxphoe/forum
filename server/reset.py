@@ -1,3 +1,7 @@
+'''
+重置数据库
+'''
+
 from sqlalchemy import create_engine
 
 import config
